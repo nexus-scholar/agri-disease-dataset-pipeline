@@ -16,13 +16,17 @@ SPLITS = ["train", "test"]
 
 
 def process_plantdoc(source_dir: Path, output_dir: Path) -> list[dict[str, str]]:
-    """Process PlantDoc dataset by merging train/test into one dataset."""
-    source_dir = Path(source_dir)
-    output_dir = Path(output_dir)
-
+    """Process PlantDoc dataset.
+    Structure: pd/train/Class_Name/images... and pd/test/Class_Name/images...
+    Merges train and test into single dataset.
+    """
     print("\n" + "=" * 60)
     print("PROCESSING PLANTDOC (pd) - Merging train/test")
     print("=" * 60)
+
+    source_dir = Path(source_dir)
+    extracted_root = source_dir
+    output_dir = Path(output_dir)
 
     if not source_dir.exists():
         print(f"ERROR: Source folder not found: {source_dir}")
@@ -74,6 +78,8 @@ def process_plantdoc(source_dir: Path, output_dir: Path) -> list[dict[str, str]]
     print("\n  " + "-" * 50)
     print(f"  TOTAL: {len(csv_data)} images, {len(stats)} classes")
     print(f"  CSV saved: {output_dir / 'labels.csv'}")
+
+    safe_rmtree(extracted_root)
     return csv_data
 
 
@@ -101,4 +107,3 @@ def _write_metadata(output_dir: Path, csv_data, stats):
     with open(output_dir / "metadata.json", "w", encoding="utf-8") as fh:
         import json
         json.dump(metadata, fh, indent=2)
-

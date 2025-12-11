@@ -15,6 +15,7 @@ from .label_utils import normalize_label
 def process_plantvillage(source_dir: Path, output_dir: Path) -> list[dict[str, str]]:
     """Process PlantVillage dataset into normalized folder + CSV."""
     source_dir = Path(source_dir)
+    extracted_root = source_dir
     output_dir = Path(output_dir)
 
     print("\n" + "=" * 60)
@@ -76,6 +77,8 @@ def process_plantvillage(source_dir: Path, output_dir: Path) -> list[dict[str, s
     print("-" * 60)
     print(f"TOTAL: {len(csv_data)} images, {len(stats)} classes")
     print(f"CSV saved: {output_dir / 'labels.csv'}")
+
+    safe_rmtree(extracted_root)
     return csv_data
 
 
@@ -102,4 +105,3 @@ def _write_metadata(output_dir: Path, csv_data, stats):
     with open(output_dir / "metadata.json", "w", encoding="utf-8") as fh:
         import json
         json.dump(metadata, fh, indent=2)
-

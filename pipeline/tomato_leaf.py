@@ -28,6 +28,7 @@ class TomatoLeafRecord:
 def process_tomato_leaf(raw_dir: Path, processed_dir: Path) -> list[dict[str, str]]:
     """Process tomato leaf dataset into YOLO-friendly structure."""
     raw_dir = Path(raw_dir)
+    extracted_root = raw_dir
     processed_dir = Path(processed_dir)
 
     print("\n" + "=" * 60)
@@ -111,4 +112,5 @@ def process_tomato_leaf(raw_dir: Path, processed_dir: Path) -> list[dict[str, st
     with open(processed_dir / "metadata.json", "w", encoding="utf-8") as fh:
         json.dump(metadata, fh, indent=2)
 
+    safe_rmtree(extracted_root)
     return records
