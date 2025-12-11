@@ -23,6 +23,7 @@ from pipeline.plantdoc import process_plantdoc
 from pipeline.plantvillage import process_plantvillage
 from pipeline.tomato_leaf import process_tomato_leaf
 from pipeline.zip_utils import unzip_dataset
+from pipeline.download_utils import download_datasets
 
 
 def create_combined_csv(pv_data, pd_data, tl_data, output_path):
@@ -156,6 +157,15 @@ def main():
     print("=" * 60)
     print(f"Project root: {config.paths.project_root}")
     print(f"Processing date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    if config.download:
+        print("\n" + "=" * 60)
+        print("STEP 0: DOWNLOADING DATASETS")
+        print("=" * 60)
+        download_datasets(config.datasets, config)
+        if config.download_only:
+            print("Download-only flag set; exiting after downloads.")
+            return
 
     print("\n" + "=" * 60)
     print("STEP 1: EXTRACTING DATASETS FROM ZIP FILES")

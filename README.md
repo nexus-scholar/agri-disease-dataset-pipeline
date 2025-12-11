@@ -66,10 +66,19 @@ Processed outputs are not tracked; they will be re-created in `data/processed/da
 python process_datasets.py --datasets plantvillage plantdoc tomatoleaf --log-level INFO
 ```
 
+Add public download URLs via environment variables (`PLANTVILLAGE_URL`, `PLANTDOC_URL`, `TOMATOLEAF_URL`) or per-run overrides:
+
+```bash
+python process_datasets.py --download --dataset-url plantdoc=https://example.com/plantdoc.zip
+```
+
 Flags:
 
 - `--datasets` – subset to run (`plantvillage`, `plantdoc`, `tomatoleaf`). Defaults to all.
 - `--log-level` – logging verbosity (`INFO`, `DEBUG`, ...).
+- `--download` – fetch missing archives before processing.
+- `--download-only` – fetch archives and exit without extraction.
+- `--dataset-url name=url` – per-dataset URL override.
 
 The script clears previous processed folders, extracts long-path-safe copies, and regenerates CSV/metadata files. `combined_dataset.csv` always reflects the datasets processed in the current run.
 
@@ -99,6 +108,9 @@ Each extraction also emits `{Dataset}_renamed_files.json` if any filenames were 
 
 ```bash
 .\.venv\Scripts\python.exe -m pytest tests
+```
+```bash
+python process_datasets.py --download-only --datasets plantdoc --dataset-url plantdoc=https://...
 ```
 
 ## Troubleshooting
