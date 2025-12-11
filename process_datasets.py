@@ -16,14 +16,18 @@ from __future__ import annotations
 import csv
 from datetime import datetime
 from pathlib import Path
+import importlib
 
-from pipeline.config import load_default_config, parse_args
+from pipeline.config import load_default_config, parse_args, DatasetSource
 from pipeline.logging_utils import configure_logging
-from pipeline.plantdoc import process_plantdoc
-from pipeline.plantvillage import process_plantvillage
-from pipeline.tomato_leaf import process_tomato_leaf
 from pipeline.zip_utils import unzip_dataset
 from pipeline.download_utils import download_datasets
+
+
+def _import_processor(processor_path: str):
+    module_name, func_name = processor_path.split(":")
+    module = importlib.import_module(module_name)
+    return getattr(module, func_name)
 
 
 def create_combined_csv(pv_data, pd_data, tl_data, output_path):
@@ -171,26 +175,31 @@ def main():
     print("STEP 1: EXTRACTING DATASETS FROM ZIP FILES")
     print("=" * 60)
 
-    pv_extracted = unzip_dataset(config.paths.plantvillage_zip, config.paths.plantvillage_raw, "PlantVillage") if "plantvillage" in config.datasets else None
-    pd_extracted = unzip_dataset(config.paths.plantdoc_zip, config.paths.plantdoc_raw, "PlantDoc") if "plantdoc" in config.datasets else None
-    tl_extracted = unzip_dataset(config.paths.tomato_leaf_zip, config.paths.tomato_leaf_raw, "TomatoLeaf") if "tomatoleaf" in config.datasets else None
+    processed_data = {}
+    for dataset_name in config.datasets:
+        source: DatasetSource | None = config.dataset_sources.get(dataset_name)
+        if not source:
+            print(f"WARNING: Dataset '{dataset_name}' not defined in datasets.json")
+            continue
+        zip_path = source.zip_path
+        raw_dir = source.raw_dir
+        print(f"\n--- {dataset_name.upper()} ---")
+        extracted = unzip_dataset(zip_path, raw_dir, dataset_name)
+        if not extracted:
+            print(f"  Skipping {dataset_name} (extraction failed)")
+            continue
+        processor = _import_processor(source.processor_path)
+        data = processor(extracted, source.processed_dir)
+        processed_data[dataset_name] = data
 
-    if not any([pv_extracted, pd_extracted, tl_extracted]):
-        print("\nERROR: No datasets were extracted. Please check zip files exist at:")
-        print(f"  - {config.paths.plantvillage_zip}")
-        print(f"  - {config.paths.plantdoc_zip}")
-        print(f"  - {config.paths.tomato_leaf_zip}")
+    if not processed_data:
+        print("\nERROR: No datasets were processed successfully.")
         return
 
-    print("\n" + "=" * 60)
-    print("STEP 2: PROCESSING DATASETS")
-    print("=" * 60)
-
-    pv_data = process_plantvillage(pv_extracted, config.paths.plantvillage_processed) if pv_extracted else []
-    pd_data = process_plantdoc(pd_extracted, config.paths.plantdoc_processed) if pd_extracted else []
-    tl_data = process_tomato_leaf(tl_extracted, config.paths.tomato_leaf_processed) if tl_extracted else []
-
     combined_path = config.paths.combined_csv
+    pv_data = processed_data.get("plantvillage", [])
+    pd_data = processed_data.get("plantdoc", [])
+    tl_data = processed_data.get("tomatoleaf", [])
     create_combined_csv(pv_data, pd_data, tl_data, combined_path)
     print_summary(pv_data, pd_data, tl_data)
 

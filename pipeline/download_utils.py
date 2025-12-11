@@ -52,17 +52,14 @@ def download_file(url: str, dest: Path, overwrite: bool = False):
 def download_datasets(dataset_names: Iterable[str], config) -> list[Path]:
     downloaded = []
     for name in dataset_names:
-        url = config.dataset_urls.get(name)
+        source = config.dataset_sources.get(name)
+        if not source:
+            print(f"No dataset definition found for {name}; skipping download.")
+            continue
+        url = source.url
         if not url:
             print(f"No download URL configured for {name}. Use --dataset-url or env var to provide one.")
             continue
-        dest = {
-            "plantvillage": config.paths.plantvillage_zip,
-            "plantdoc": config.paths.plantdoc_zip,
-            "tomatoleaf": config.paths.tomato_leaf_zip,
-        }.get(name)
-        if not dest:
-            continue
+        dest = source.zip_path
         downloaded.append(download_file(url, dest, overwrite=config.overwrite_existing))
     return downloaded
-

@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import importlib
+import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -11,6 +13,9 @@ from pathlib import Path
 class DatasetSource:
     name: str
     zip_path: Path
+    raw_dir: Path
+    processed_dir: Path
+    processor_path: str
     url: str | None = None
 
 
@@ -83,33 +88,61 @@ class PipelineConfig:
     log_level: str = "INFO"
     download: bool = False
     download_only: bool = False
-    dataset_urls: dict[str, str | None] = None
+    dataset_sources: dict[str, DatasetSource] | None = None
 
 
-DEFAULT_DATASET_URLS = {
-    "plantvillage": os.getenv("PLANTVILLAGE_URL", "https://github.com/spMohanty/PlantVillage-Dataset/archive/refs/heads/master.zip"),
-    "plantdoc": os.getenv("PLANTDOC_URL", "https://github.com/pratikkayal/PlantDoc-Dataset/archive/refs/heads/master.zip"),
-    "tomatoleaf": os.getenv("TOMATOLEAF_URL", "https://data.mendeley.com/public-files/datasets/bpfd9cns5g/2/download"),
-}
+def load_dataset_definitions(paths: Paths) -> dict[str, DatasetSource]:
+    config_path = paths.project_root / "datasets.json"
+    if not config_path.exists():
+        raise FileNotFoundError(f"datasets.json not found at {config_path}")
+    with open(config_path, "r", encoding="utf-8") as fh:
+        raw_definitions = json.load(fh)
+    sources: dict[str, DatasetSource] = {}
+    for definition in raw_definitions:
+        name = definition["name"].lower()
+        zip_path = paths.raw_dataset_dir / definition["zip_name"]
+        raw_dir = paths.processed_dataset_dir / definition["raw_dir"]
+        processed_dir = paths.processed_dataset_dir / definition["processed_dir"]
+        processor_path = definition["processor"]
+        url = definition.get("url")
+        sources[name] = DatasetSource(
+            name=name,
+            zip_path=zip_path,
+            raw_dir=raw_dir,
+            processed_dir=processed_dir,
+            processor_path=processor_path,
+            url=url
+        )
+    return sources
 
 
 def load_default_config(project_root: Path | None = None, datasets: tuple[str, ...] | None = None,
                         download: bool = False, download_only: bool = False,
-                        dataset_urls: dict[str, str | None] | None = None,
+                        dataset_url_overrides: dict[str, str | None] | None = None,
                         log_level: str = "INFO") -> PipelineConfig:
     """Create a default configuration for the repository."""
     if project_root is None:
         project_root = Path(__file__).resolve().parent.parent
     selected = datasets or ("plantvillage", "plantdoc", "tomatoleaf")
-    urls = DEFAULT_DATASET_URLS.copy()
-    if dataset_urls:
-        urls.update(dataset_urls)
-    return PipelineConfig(paths=Paths(project_root=project_root),
+    paths = Paths(project_root=project_root)
+    sources = load_dataset_definitions(paths)
+    if dataset_url_overrides:
+        for name, url in dataset_url_overrides.items():
+            if name in sources:
+                sources[name] = DatasetSource(
+                    name=sources[name].name,
+                    zip_path=sources[name].zip_path,
+                    raw_dir=sources[name].raw_dir,
+                    processed_dir=sources[name].processed_dir,
+                    processor_path=sources[name].processor_path,
+                    url=url or sources[name].url
+                )
+    return PipelineConfig(paths=paths,
                           datasets=selected,
                           log_level=log_level,
                           download=download,
                           download_only=download_only,
-                          dataset_urls=urls)
+                          dataset_sources=sources)
 
 
 def parse_args() -> PipelineConfig:
@@ -136,6 +169,6 @@ def parse_args() -> PipelineConfig:
     cfg = load_default_config(datasets=tuple(args.datasets),
                               download=download_flag,
                               download_only=args.download_only,
-                              dataset_urls=dataset_url_overrides,
+                              dataset_url_overrides=dataset_url_overrides,
                               log_level=args.log_level)
     return cfg

@@ -25,6 +25,7 @@
 ├── pipeline/                   # core modules (config, fs utils, processors)
 ├── tests/                      # pytest unit tests
 ├── docs/                       # architecture & dataset notes (+ diagrams/screenshots)
+├── datasets.json               # declarative dataset registry (name, processor, URLs)
 ├── process_datasets.py         # CLI entry point
 ├── requirements.txt            # runtime deps
 └── README.md

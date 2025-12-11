@@ -1,0 +1,27 @@
+[
+  {
+    "name": "plantvillage",
+    "zip_name": "plantvillage.zip",
+    "raw_dir": "PlantVillage",
+    "processed_dir": "PlantVillage_processed",
+    "processor": "pipeline.plantvillage:process_plantvillage",
+    "url": "https://github.com/spMohanty/PlantVillage-Dataset/archive/refs/heads/master.zip"
+  },
+  {
+    "name": "plantdoc",
+    "zip_name": "plantdoc.zip",
+    "raw_dir": "PlantDoc",
+    "processed_dir": "PlantDoc_processed",
+    "processor": "pipeline.plantdoc:process_plantdoc",
+    "url": "https://github.com/pratikkayal/PlantDoc-Dataset/archive/refs/heads/master.zip"
+  },
+  {
+    "name": "tomatoleaf",
+    "zip_name": "Tomato Leaf Dataset  A dataset for multiclass disease detection and classification.zip",
+    "raw_dir": "TomatoLeaf",
+    "processed_dir": "TomatoLeaf_processed",
+    "processor": "pipeline.tomato_leaf:process_tomato_leaf",
+    "url": "https://data.mendeley.com/public-files/datasets/bpfd9cns5g/2/download"
+  }
+]
+
