@@ -278,13 +278,30 @@ VALIDATING: TOMATO
 [SOURCE: PlantVillage]
   Classes on disk (10):
     tomato_bacterial_spot: 4254 samples -> tomato_bacterial_spot
-    ...
+    tomato_early_blight: 2000 samples -> tomato_early_blight
+    tomato_healthy: 3182 samples -> tomato_healthy
+    tomato_late_blight: 3818 samples -> tomato_late_blight
+    tomato_mold: 1904 samples -> tomato_leaf_mold
+    tomato_mosaic_virus: 746 samples -> tomato_mosaic_virus
+    tomato_septoria_spot: 3542 samples -> tomato_septoria_spot
+    tomato_spider_mites_two_spotted_spider_mite: 3352 samples -> tomato_spider_mites
+    tomato_target_spot: 2808 samples -> EXCLUDED
     tomato_yellow_curl_virus: 6416 samples -> tomato_yellow_leaf_curl
+
+[TARGET: PlantDoc]
+  Classes on disk (9):
+    ...
+    tomato_two_spotted_spider_mites: 4 samples -> tomato_spider_mites
+    tomato_yellow_virus: 152 samples -> tomato_yellow_leaf_curl
     
 [CANONICAL CLASSES]
-  Defined (8): ['tomato_bacterial_spot', ...]
-  Source covers: ['tomato_bacterial_spot', ...]
-  Target covers: ['tomato_bacterial_spot', ...]
+  Defined (9): ['tomato_bacterial_spot', 'tomato_early_blight', ...]
+  Source covers: all 9
+  Target covers: all 9
+
+[SAMPLE COUNTS]
+  Source total: 32022 (29214 after mapping)
+  Target total: 1491 (1491 after mapping)
 
 [OK] Configuration matches data on disk
 ```
