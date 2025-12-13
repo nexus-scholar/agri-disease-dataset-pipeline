@@ -1,151 +1,150 @@
-# agri-disease-dataset-pipeline
+# Partial Domain Adaptation for Agricultural Edge AI
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20WSL-success.svg" alt="Platform">
-  <img src="https://img.shields.io/badge/tests-pytest-lightgrey.svg" alt="Tests">
-  <img src="https://img.shields.io/badge/license-Refer%20dataset%20authors-orange.svg" alt="License">
+  <img src="https://img.shields.io/badge/PyTorch-2.1%2B-red.svg" alt="PyTorch 2.1+">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
 </p>
 
-> **Reproducible long-path-safe pipeline for extracting, normalizing, and merging PlantVillage, PlantDoc, and Tomato Leaf datasets into a single ML-ready manifest.**
+> **Bridging the Lab-to-Field Generalization Gap with Active Learning and Semi-Supervised Learning**
 
-## Highlights
+## Overview
 
-- 🔁 **End-to-end automation** – unzip, normalize, label, and aggregate datasets in one command.
-- 🪟 **Windows-first resilience** – mitigates `MAX_PATH` issues via extended-path copying and rename manifests.
-- 📊 **Consistent outputs** – sequential filenames, CSV labels, metadata JSON, and a unified `combined_dataset.csv`.
-- 🧪 **Tested utilities** – label normalization covered by `pytest`; processors structured for extension.
+This repository implements a **Partial Domain Adaptation (PDA)** framework for plant disease detection, combining:
+- **Active Learning** with Hybrid sampling (70% Entropy / 30% Random)
+- **FixMatch** semi-supervised learning for handling missing classes
+- Support for **MobileNetV3**, **EfficientNet**, and **MobileViT** architectures
 
-## Repository Layout
+## Key Features
 
-```
-├── data/
-│   ├── raw/dataset/            # place plantvillage.zip, plantdoc.zip, tomato leaf zip
-│   └── processed/dataset/      # generated outputs (cleaned on commit)
-├── pipeline/                   # core modules (config, fs utils, processors)
-├── tests/                      # pytest unit tests
-├── docs/                       # architecture & dataset notes (+ diagrams/screenshots)
-├── datasets.json               # declarative dataset registry (name, processor, URLs)
-├── process_datasets.py         # CLI entry point
-├── requirements.txt            # runtime deps
-└── README.md
-```
+- 🔬 **Semantic Label Mapping** - Handles class mismatches between PlantVillage (lab) and PlantDoc (field)
+- 🎯 **PDA-aware Training** - Handles "phantom classes" present in source but missing in target
+- 📊 **Forensic Experiment Logging** - Full reproducibility with config, splits, and metrics recording
+- ⚡ **Edge-optimized** - Designed for deployment on resource-constrained devices
 
-## Quick Links
-
-| Topic | Resource |
-|-------|----------|
-| Architecture & diagrams | [`docs/pipeline_overview.md`](docs/pipeline_overview.md) |
-| Dataset-specific nuances | [`docs/datasets.md`](docs/datasets.md) |
-| Issue tracker | GitHub Issues (enable upon publishing) |
-
-## Requirements
-
-- Windows 10/11 with long-paths enabled (or WSL/Ubuntu)
-- Python 3.10+
-- ~10 GB free disk space for extraction
+## Installation
 
 ```bash
+git clone https://github.com/YOUR_USERNAME/dataset-processing.git
+cd dataset-processing
 python -m venv .venv
-.\.venv\Scripts\activate
+.\.venv\Scripts\activate  # Windows
+# source .venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-## Dataset Preparation
+## Quick Start
 
-Copy the raw archives into `data/raw/dataset/` before running the pipeline:
+### 1. Prepare Data
 
+Place datasets in `data/raw/dataset/`:
 - `plantvillage.zip`
 - `plantdoc.zip`
-- `Tomato Leaf Dataset  A dataset for multiclass disease detection and classification.zip`
-
-Processed outputs are not tracked; they will be re-created in `data/processed/dataset/` on demand.
-
-## Run the Pipeline
 
 ```bash
-python process_datasets.py --datasets plantvillage plantdoc tomatoleaf --log-level INFO
+python process_datasets.py --datasets plantvillage plantdoc
 ```
 
-Add public download URLs via environment variables (`PLANTVILLAGE_URL`, `PLANTDOC_URL`, `TOMATOLEAF_URL`) or per-run overrides:
+### 2. Run Experiments
 
 ```bash
-python process_datasets.py --download --dataset-url plantdoc=https://example.com/plantdoc.zip
+# List all 26 experiments
+python colab_experiment_runner.py --list
+
+# Run Phase 1 (Baselines)
+python colab_experiment_runner.py --phase 1
+
+# Run all experiments (~9 hours on GPU)
+python colab_experiment_runner.py --all
 ```
 
-Flags:
-
-- `--datasets` – subset to run (`plantvillage`, `plantdoc`, `tomatoleaf`). Defaults to all.
-- `--log-level` – logging verbosity (`INFO`, `DEBUG`, ...).
-- `--download` – fetch missing archives before processing.
-- `--download-only` – fetch archives and exit without extraction.
-- `--dataset-url name=url` – per-dataset URL override.
-
-The script clears previous processed folders, extracts long-path-safe copies, and regenerates CSV/metadata files. `combined_dataset.csv` always reflects the datasets processed in the current run.
-
-## Outputs
-
-```
-data/processed/dataset/
-├── PlantVillage_processed/
-│   ├── {class_label}/image-00001.jpg
-│   ├── labels.csv
-│   └── metadata.json
-├── PlantDoc_processed/
-│   ├── {class_label}/image-00001.jpg
-│   ├── labels.csv
-│   └── metadata.json
-├── TomatoLeaf_processed/
-│   ├── images/
-│   ├── annotated/{train,test}/images
-│   ├── labels/
-│   └── metadata.json
-└── combined_dataset.csv
-```
-
-Each extraction also emits `{Dataset}_renamed_files.json` if any filenames were truncated to satisfy Windows path constraints.
-
-## Using Processed Data in ML Pipelines
-
-Load metadata and image paths with the new dataset loader:
-
-```python
-from pipeline.dataset_loader import DatasetLoader
-
-loader = DatasetLoader("plantvillage")
-print(loader.summary())
-df = loader.to_dataframe()
-# iterate through resolved image paths
-for path in loader.iter_image_paths():
-    ...
-```
-
-## Testing
+### 3. Single Experiment
 
 ```bash
-.\.venv\Scripts\python.exe -m pytest tests
+# Baseline training
+python run_experiment.py --mode baseline --model mobilenetv3 --crop tomato
+
+# Active Learning with FixMatch
+python run_experiment.py --mode active --model mobilenetv3 --crop potato \
+    --strategy hybrid --use-fixmatch --budget 10 --rounds 5
 ```
+
+## Project Structure
+
+```
+├── src/                    # Core ML modules
+│   ├── config/             # Configuration and crop mappings
+│   ├── data/               # Data loading and transforms
+│   ├── models/             # Model factory (MobileNet, EfficientNet, ViT)
+│   ├── strategies/         # Active learning and FixMatch
+│   └── utils/              # Metrics, recording, console utilities
+├── experiments/            # Individual experiment scripts
+├── pipeline/               # Dataset processing modules
+├── data/
+│   ├── raw/                # Place zip files here
+│   ├── processed/          # Generated outputs
+│   └── models/baselines/   # Trained model checkpoints
+├── results/
+│   └── experiments/        # Experiment logs and metrics
+├── docs/                   # Documentation
+│   ├── EXPERIMENTS.md      # Full experiment protocol
+│   ├── datasets.md         # Dataset information
+│   └── pipeline_overview.md
+├── run_experiment.py       # CLI entry point
+└── colab_experiment_runner.py  # Batch experiment runner
+```
+
+## Experiment Protocol
+
+| Phase | Name | Experiments | Purpose |
+|-------|------|-------------|---------|
+| **P1** | Baselines | 12 | Measure generalization gap |
+| **P2** | Strong Aug | 3 | Prove augmentation isn't enough |
+| **P3** | AL Ablation | 4 | Justify Hybrid strategy |
+| **P4** | FixMatch | 3 | Core SSL contribution |
+| **P5** | Architecture | 4 | Benchmark models |
+
+See [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for the complete protocol.
+
+## Supported Crops
+
+| Crop | Classes | PDA Scenario |
+|------|---------|--------------|
+| Tomato | 7 | No (standard DA) |
+| Potato | 3 | **Yes** (healthy missing in field) |
+| Pepper | 2 | No (full alignment) |
+
+## CLI Reference
+
 ```bash
-python process_datasets.py --download-only --datasets plantdoc --dataset-url plantdoc=https://...
+python run_experiment.py --help
+
+Options:
+  --mode {baseline,active}              Experiment mode
+  --model {mobilenetv3,efficientnet,mobilevit}
+  --crop CROP                           Crop filter
+  --strategy {random,entropy,hybrid}    AL strategy
+  --use-fixmatch                        Enable FixMatch SSL
+  --strong-aug                          Use AutoAugment
+  --budget N                            Samples per AL round
+  --rounds N                            Number of AL rounds
+  --exp-name NAME                       Experiment identifier
 ```
 
-## Troubleshooting
+## Citation
 
-| Symptom | Remedy |
-|---------|--------|
-| `WinError 3` / path too long | Ensure `LongPathsAware=1` or run under WSL; review rename manifest. |
-| Missing dataset folders | Confirm zip presence under `data/raw/dataset/`. |
-| Antivirus slows extraction | Temporarily exclude the repo path or run on SSD. |
-| Need original filenames | Cross-reference `{Dataset}_renamed_files.json` for mappings. |
+```bibtex
+@article{author2025pda,
+  title={Partial Domain Adaptation for Agricultural Edge AI: 
+         Bridging the Lab-to-Field Gap with Active Learning},
+  author={[Author Names]},
+  journal={[Journal]},
+  year={2025}
+}
+```
 
-## Contributing
+## License
 
-1. Fork & branch (`git checkout -b feature/...`).
-2. Add/adjust processors or utilities under `pipeline/`.
-3. Update docs/tests as needed.
-4. Run `pytest` + sample `process_datasets.py` invocation.
-5. Submit a PR with a concise summary and validation details.
+Code: MIT License  
+Datasets: Refer to original authors ([PlantVillage](https://github.com/spMohanty/PlantVillage-Dataset), [PlantDoc](https://github.com/pratikkayal/PlantDoc-Dataset))
 
-## License / Citation
-
-Refer to the original dataset licenses (PlantVillage, PlantDoc, Tomato Leaf). This pipeline is distributed under the repository’s default license; cite the dataset authors in downstream research.

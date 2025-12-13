@@ -1,0 +1,600 @@
+"""
+Shared configuration and utilities for all experiments.
+
+This module provides:
+- Centralized configuration (hyperparameters, paths)
+- Common data transforms
+- Shared dataset classes
+- Training and evaluation utilities
+- Logging and progress display
+"""
+
+import os
+import sys
+import copy
+import json
+import time
+from pathlib import Path
+from dataclasses import dataclass, field, asdict
+from datetime import datetime
+from typing import List, Dict, Tuple, Optional, Callable
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, Dataset, Subset
+from torchvision import datasets, transforms, models
+from torchvision.models import MobileNet_V3_Small_Weights
+import numpy as np
+
+# Optional imports
+try:
+    from tqdm import tqdm
+    HAS_TQDM = True
+except ImportError:
+    HAS_TQDM = False
+
+# =============================================================================
+# PATH CONFIGURATION
+# =============================================================================
+
+SCRIPT_DIR = Path(__file__).parent.resolve()
+PROJECT_ROOT = SCRIPT_DIR.parent
+DATA_DIR = PROJECT_ROOT / "data"
+MODELS_DIR = DATA_DIR / "models"
+RESULTS_DIR = PROJECT_ROOT / "results"
+LOGS_DIR = RESULTS_DIR / "logs"
+
+# Default dataset location (one level up from project)
+DEFAULT_DATASET_ROOT = PROJECT_ROOT.parent / "dataset"
+
+
+def ensure_dir(path: Path) -> Path:
+    """Create directory if needed."""
+    path = Path(path)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+# =============================================================================
+# HYPERPARAMETERS
+# =============================================================================
+
+@dataclass
+class TrainingConfig:
+    """Training hyperparameters."""
+    batch_size: int = 16
+    epochs: int = 5
+    learning_rate: float = 0.001
+    num_workers: int = 0  # 0 for Windows compatibility
+    image_size: int = 224
+
+    # ImageNet normalization
+    normalize_mean: Tuple[float, ...] = (0.485, 0.456, 0.406)
+    normalize_std: Tuple[float, ...] = (0.229, 0.224, 0.225)
+
+
+@dataclass
+class ActiveLearningConfig:
+    """Active learning hyperparameters."""
+    fine_tune_lr: float = 0.0001
+    epochs_per_round: int = 5
+    budget_per_round: int = 50
+    num_rounds: int = 4
+    pool_batch_size: int = 32
+    train_batch_size: int = 8
+    random_seed: int = 42
+
+    @property
+    def total_budget(self) -> int:
+        return self.budget_per_round * self.num_rounds
+
+    @property
+    def budget_rounds(self) -> List[int]:
+        return [self.budget_per_round] * self.num_rounds
+
+
+@dataclass
+class CutMixConfig:
+    """CutMix augmentation hyperparameters."""
+    probability: float = 0.5
+    beta: float = 1.0
+
+
+# =============================================================================
+# CONSOLE OUTPUT
+# =============================================================================
+
+class Colors:
+    """ANSI color codes."""
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    DIM = '\033[2m'
+    RESET = '\033[0m'
+
+
+# Disable colors if not TTY
+if not sys.stdout.isatty():
+    for attr in ['HEADER', 'BLUE', 'CYAN', 'GREEN', 'YELLOW', 'RED', 'BOLD', 'DIM', 'RESET']:
+        setattr(Colors, attr, '')
+
+
+def print_header(title: str, experiment_num: int = None):
+    """Print experiment header."""
+    line = "=" * 60
+    print(f"\n{Colors.BOLD}{Colors.CYAN}{line}{Colors.RESET}")
+    if experiment_num:
+        print(f"{Colors.BOLD}{Colors.CYAN}  EXPERIMENT {experiment_num:02d}: {title}{Colors.RESET}")
+    else:
+        print(f"{Colors.BOLD}{Colors.CYAN}  {title}{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{line}{Colors.RESET}\n")
+
+
+def print_section(title: str):
+    """Print section header."""
+    print(f"\n{Colors.BOLD}[{title}]{Colors.RESET}")
+    print("-" * 40)
+
+
+def print_config(config):
+    """Print configuration in a readable format."""
+    if hasattr(config, '__dataclass_fields__'):
+        for key, value in asdict(config).items():
+            print(f"  {key}: {value}")
+    else:
+        for key, value in vars(config).items():
+            if not key.startswith('_'):
+                print(f"  {key}: {value}")
+
+
+def print_results_table(results: Dict[str, List[float]], x_values: List[int], title: str = "Results"):
+    """Print results comparison table."""
+    print(f"\n{Colors.BOLD}=== {title.upper()} ==={Colors.RESET}")
+
+    # Header
+    header = f"{'Labels':<10}"
+    for name in results.keys():
+        header += f" | {name:<12}"
+    print(header)
+    print("-" * len(header))
+
+    # Rows
+    for i, x in enumerate(x_values):
+        row = f"{x:<10}"
+        for name, values in results.items():
+            if i < len(values):
+                row += f" | {values[i]:>10.2f}%"
+            else:
+                row += f" | {'N/A':>10}"
+        print(row)
+
+
+def progress_bar(iterable, desc: str = "", total: int = None, leave: bool = True):
+    """Wrapper for progress bar (uses tqdm if available)."""
+    if HAS_TQDM:
+        return tqdm(iterable, desc=desc, total=total, leave=leave)
+    else:
+        return iterable
+
+
+# =============================================================================
+# DATA TRANSFORMS
+# =============================================================================
+
+def get_transforms(config: TrainingConfig = None) -> Dict[str, transforms.Compose]:
+    """Get standard train/val transforms."""
+    if config is None:
+        config = TrainingConfig()
+
+    return {
+        'train': transforms.Compose([
+            transforms.Resize((config.image_size, config.image_size)),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize(config.normalize_mean, config.normalize_std)
+        ]),
+        'val': transforms.Compose([
+            transforms.Resize((config.image_size, config.image_size)),
+            transforms.ToTensor(),
+            transforms.Normalize(config.normalize_mean, config.normalize_std)
+        ]),
+    }
+
+
+# =============================================================================
+# DATASET UTILITIES
+# =============================================================================
+
+def find_dataset_path(root: Path, folder_name: str) -> Tuple[Path, Optional[Path]]:
+    """
+    Find dataset directory, handling both train/val split and flat structures.
+
+    Returns:
+        (train_path, val_path) - val_path is None for flat structures
+    """
+    root = Path(root)
+    base = root / folder_name
+
+    if not base.exists():
+        raise FileNotFoundError(f"Dataset folder not found: {base}")
+
+    train_sub = base / "train"
+    val_sub = base / "val"
+
+    if train_sub.is_dir() and val_sub.is_dir():
+        return train_sub, val_sub
+    elif train_sub.is_dir():
+        return train_sub, None
+    else:
+        return base, None
+
+
+class FilteredImageFolder(datasets.ImageFolder):
+    """
+    ImageFolder that filters to specific classes.
+
+    Supports both exact matching and partial matching (e.g., 'Tomato' matches
+    'Tomato___Early_blight').
+    """
+
+    def __init__(self, root: str, transform=None, class_filter: List[str] = None):
+        super().__init__(root, transform=transform)
+
+        if class_filter:
+            self._apply_filter(class_filter)
+
+    def _apply_filter(self, class_filter: List[str]):
+        """Filter samples to only include matching classes."""
+        original_classes = self.classes.copy()
+
+        # Try exact match first, then partial match
+        matched = [c for c in original_classes if c in class_filter]
+        if not matched:
+            matched = [
+                c for c in original_classes
+                if any(f.lower() in c.lower() for f in class_filter)
+            ]
+
+        if not matched:
+            raise ValueError(
+                f"No classes matched filter {class_filter}. "
+                f"Available: {original_classes[:5]}..."
+            )
+
+        # Rebuild class mapping
+        self.classes = matched
+        self.class_to_idx = {c: i for i, c in enumerate(self.classes)}
+
+        # Filter samples
+        filtered = []
+        for path, old_idx in self.samples:
+            class_name = original_classes[old_idx]
+            if class_name in self.classes:
+                new_idx = self.class_to_idx[class_name]
+                filtered.append((path, new_idx))
+
+        self.samples = filtered
+        self.targets = [s[1] for s in self.samples]
+
+
+class CanonicalImageFolder(datasets.ImageFolder):
+    """
+    ImageFolder that aligns class indices to a canonical schema.
+
+    This ensures that class indices are consistent across datasets,
+    even if some classes are missing.
+    """
+
+    def __init__(self, root: str, canonical_classes: List[str], transform=None):
+        super().__init__(root, transform=transform)
+
+        # Build canonical mapping
+        canonical_map = {name: idx for idx, name in enumerate(canonical_classes)}
+
+        # Remap samples
+        aligned = []
+        found_classes = set()
+
+        for path, old_idx in self.samples:
+            class_name = self.classes[old_idx]
+            if class_name in canonical_map:
+                new_idx = canonical_map[class_name]
+                aligned.append((path, new_idx))
+                found_classes.add(class_name)
+
+        # Update state
+        self.samples = aligned
+        self.targets = [s[1] for s in aligned]
+        self.classes = canonical_classes
+        self.class_to_idx = canonical_map
+
+        missing = set(canonical_classes) - found_classes
+        if missing:
+            print(f"  {Colors.DIM}Note: {len(missing)} classes missing from this dataset{Colors.RESET}")
+
+
+def create_data_loaders(
+    train_dataset: Dataset,
+    val_dataset: Dataset,
+    test_dataset: Dataset = None,
+    config: TrainingConfig = None
+) -> Dict[str, DataLoader]:
+    """Create DataLoaders with proper configuration."""
+    if config is None:
+        config = TrainingConfig()
+
+    loaders = {
+        'train': DataLoader(
+            train_dataset,
+            batch_size=config.batch_size,
+            shuffle=True,
+            num_workers=config.num_workers,
+            pin_memory=torch.cuda.is_available()
+        ),
+        'val': DataLoader(
+            val_dataset,
+            batch_size=config.batch_size,
+            shuffle=False,
+            num_workers=config.num_workers,
+            pin_memory=torch.cuda.is_available()
+        ),
+    }
+
+    if test_dataset:
+        loaders['test'] = DataLoader(
+            test_dataset,
+            batch_size=config.batch_size,
+            shuffle=False,
+            num_workers=config.num_workers,
+            pin_memory=torch.cuda.is_available()
+        )
+
+    return loaders
+
+
+# =============================================================================
+# MODEL UTILITIES
+# =============================================================================
+
+def create_model(num_classes: int, pretrained: bool = True) -> nn.Module:
+    """Create MobileNetV3-Small model with custom classifier."""
+    weights = MobileNet_V3_Small_Weights.DEFAULT if pretrained else None
+    model = models.mobilenet_v3_small(weights=weights)
+
+    # Replace classifier head
+    in_features = model.classifier[3].in_features
+    model.classifier[3] = nn.Linear(in_features, num_classes)
+
+    return model
+
+
+def load_model(path: Path, num_classes: int, device: torch.device) -> nn.Module:
+    """Load model from checkpoint."""
+    model = create_model(num_classes, pretrained=True)
+    model.load_state_dict(torch.load(path, map_location=device))
+    return model.to(device)
+
+
+def save_model(model: nn.Module, path: Path, metadata: dict = None):
+    """Save model with optional metadata."""
+    ensure_dir(path.parent)
+    torch.save(model.state_dict(), path)
+
+    if metadata:
+        meta_path = path.with_suffix('.json')
+        with open(meta_path, 'w') as f:
+            json.dump(metadata, f, indent=2)
+
+
+# =============================================================================
+# TRAINING UTILITIES
+# =============================================================================
+
+@dataclass
+class TrainingMetrics:
+    """Track training metrics."""
+    train_acc: List[float] = field(default_factory=list)
+    val_acc: List[float] = field(default_factory=list)
+    train_loss: List[float] = field(default_factory=list)
+    val_loss: List[float] = field(default_factory=list)
+    best_val_acc: float = 0.0
+    best_epoch: int = 0
+
+
+class Trainer:
+    """Standard training loop with best model tracking."""
+
+    def __init__(
+        self,
+        model: nn.Module,
+        device: torch.device,
+        config: TrainingConfig = None
+    ):
+        self.model = model.to(device)
+        self.device = device
+        self.config = config or TrainingConfig()
+        self.criterion = nn.CrossEntropyLoss()
+        self.optimizer = optim.Adam(model.parameters(), lr=self.config.learning_rate)
+        self.metrics = TrainingMetrics()
+        self.best_weights = None
+
+    def train_epoch(self, loader: DataLoader) -> Tuple[float, float]:
+        """Train for one epoch."""
+        self.model.train()
+        total_loss = 0.0
+        correct = 0
+        total = 0
+
+        for inputs, labels in progress_bar(loader, desc="Training", leave=False):
+            inputs, labels = inputs.to(self.device), labels.to(self.device)
+
+            self.optimizer.zero_grad()
+            outputs = self.model(inputs)
+            loss = self.criterion(outputs, labels)
+            loss.backward()
+            self.optimizer.step()
+
+            total_loss += loss.item() * inputs.size(0)
+            _, preds = outputs.max(1)
+            correct += preds.eq(labels).sum().item()
+            total += labels.size(0)
+
+        return correct / total, total_loss / total
+
+    def evaluate(self, loader: DataLoader) -> Tuple[float, float]:
+        """Evaluate model."""
+        self.model.eval()
+        total_loss = 0.0
+        correct = 0
+        total = 0
+
+        with torch.no_grad():
+            for inputs, labels in loader:
+                inputs, labels = inputs.to(self.device), labels.to(self.device)
+                outputs = self.model(inputs)
+                loss = self.criterion(outputs, labels)
+
+                total_loss += loss.item() * inputs.size(0)
+                _, preds = outputs.max(1)
+                correct += preds.eq(labels).sum().item()
+                total += labels.size(0)
+
+        return correct / total, total_loss / total
+
+    def train(
+        self,
+        train_loader: DataLoader,
+        val_loader: DataLoader,
+        epochs: int = None
+    ) -> nn.Module:
+        """Full training loop."""
+        epochs = epochs or self.config.epochs
+
+        for epoch in range(epochs):
+            # Train
+            train_acc, train_loss = self.train_epoch(train_loader)
+            val_acc, val_loss = self.evaluate(val_loader)
+
+            # Track metrics
+            self.metrics.train_acc.append(train_acc)
+            self.metrics.val_acc.append(val_acc)
+            self.metrics.train_loss.append(train_loss)
+            self.metrics.val_loss.append(val_loss)
+
+            # Track best
+            if val_acc > self.metrics.best_val_acc:
+                self.metrics.best_val_acc = val_acc
+                self.metrics.best_epoch = epoch
+                self.best_weights = copy.deepcopy(self.model.state_dict())
+
+            # Progress
+            print(f"Epoch {epoch + 1}/{epochs} | "
+                  f"Train: {train_acc:.4f} | Val: {val_acc:.4f}")
+
+        # Restore best weights
+        if self.best_weights:
+            self.model.load_state_dict(self.best_weights)
+
+        return self.model
+
+
+def evaluate_accuracy(
+    model: nn.Module,
+    loader: DataLoader,
+    device: torch.device,
+    desc: str = "Evaluating"
+) -> float:
+    """Calculate accuracy on a dataset."""
+    model.eval()
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for inputs, labels in progress_bar(loader, desc=desc, leave=False):
+            inputs, labels = inputs.to(device), labels.to(device)
+            outputs = model(inputs)
+            _, preds = outputs.max(1)
+            correct += preds.eq(labels).sum().item()
+            total += labels.size(0)
+
+    return (correct / total) * 100
+
+
+# =============================================================================
+# EXPERIMENT LOGGING
+# =============================================================================
+
+class ExperimentLogger:
+    """Log experiment results."""
+
+    def __init__(self, experiment_name: str, log_dir: Path = None):
+        self.name = experiment_name
+        self.log_dir = log_dir or LOGS_DIR
+        ensure_dir(self.log_dir)
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.log_file = self.log_dir / f"{experiment_name}_{timestamp}.log"
+        self.results = {}
+        self.start_time = time.time()
+
+    def log(self, message: str):
+        """Log message to file and console."""
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        formatted = f"[{timestamp}] {message}"
+        print(formatted)
+
+        with open(self.log_file, 'a') as f:
+            f.write(formatted + "\n")
+
+    def log_results(self, results: dict):
+        """Log final results."""
+        self.results.update(results)
+
+        self.log("\n" + "=" * 40)
+        self.log("FINAL RESULTS")
+        self.log("=" * 40)
+
+        for key, value in results.items():
+            if isinstance(value, float):
+                self.log(f"  {key}: {value:.2f}%")
+            else:
+                self.log(f"  {key}: {value}")
+
+        elapsed = time.time() - self.start_time
+        self.log(f"\nTotal time: {elapsed:.1f}s")
+
+    def save_json(self):
+        """Save results as JSON."""
+        json_path = self.log_file.with_suffix('.json')
+        with open(json_path, 'w') as f:
+            json.dump(self.results, f, indent=2)
+
+
+# =============================================================================
+# DEVICE UTILITIES
+# =============================================================================
+
+def get_device() -> torch.device:
+    """Get best available device."""
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        print(f"  Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+    else:
+        device = torch.device("cpu")
+        print("Using CPU")
+    return device
+
+
+def set_seed(seed: int = 42):
+    """Set random seeds for reproducibility."""
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+

@@ -1,0 +1,727 @@
+#!/usr/bin/env python3
+"""
+Google Colab Experiment Runner for PDA Research
+
+This script is designed to run the full experiment suite on Google Colab Pro.
+It packages all experiments and manages GPU resources efficiently.
+
+Usage on Colab:
+    1. Upload your dataset to Google Drive
+    2. Mount Drive and set DATA_ROOT
+    3. Run this script
+
+Local usage:
+    python colab_experiment_runner.py --dry-run  # Preview experiments
+    python colab_experiment_runner.py --phase 1   # Run Phase 1 only
+    python colab_experiment_runner.py --all       # Run all phases
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+import time
+from dataclasses import dataclass, field, asdict
+from datetime import datetime
+from pathlib import Path
+from typing import List, Dict, Optional, Any
+
+# Detect environment
+IN_COLAB = 'google.colab' in sys.modules if 'google' in sys.modules else False
+
+
+@dataclass
+class ExperimentRun:
+    """Single experiment configuration."""
+    id: str
+    name: str
+    phase: int
+    command: List[str]
+    description: str = ""
+    expected_time_minutes: int = 10
+    priority: int = 1  # Lower = higher priority
+    
+
+@dataclass
+class ExperimentResult:
+    """Result of a single experiment run."""
+    id: str
+    name: str
+    success: bool
+    start_time: str
+    end_time: str
+    duration_seconds: float
+    output: str = ""
+    error: str = ""
+    metrics: Dict[str, Any] = field(default_factory=dict)
+
+
+# =============================================================================
+# EXPERIMENT DEFINITIONS - FINAL PROTOCOL
+# =============================================================================
+
+def get_phase1_experiments() -> List[ExperimentRun]:
+    """
+    Phase 1: Baseline Generalization Gap (12 experiments)
+
+    Scientific Goal: Prove that models trained on Lab data fail on Field data,
+    regardless of architecture (CNN vs Transformer) or size.
+    """
+    experiments = []
+    
+    # Single crop baselines (3 crops × 3 models = 9)
+    crops = ["tomato", "potato", "pepper"]
+    models = ["mobilenetv3", "efficientnet", "mobilevit"]
+    
+    idx = 0
+    for crop in crops:
+        for model in models:
+            idx += 1
+            exp_name = f"P1_{idx:02d}_baseline_{crop}_{model}"
+            experiments.append(ExperimentRun(
+                id=f"P1-{idx:02d}",
+                name=f"Baseline {crop.title()} {model}",
+                phase=1,
+                command=[
+                    "python", "run_experiment.py",
+                    "--mode", "baseline",
+                    "--model", model,
+                    "--crop", crop,
+                    "--baseline-path", f"data/models/baselines/{crop}_{model}_base.pth",
+                    "--epochs", "10",
+                    "--lr", "0.001",
+                    "--exp-name", exp_name,
+                    "--no-confusion",
+                ],
+                description=f"Baseline: {crop} with {model} - measure generalization gap",
+                expected_time_minutes=15 if model == "mobilevit" else 10,
+                priority=1,
+            ))
+    
+    # All crops combined (1 combined × 3 models = 3)
+    for model in models:
+        idx += 1
+        exp_name = f"P1_{idx:02d}_baseline_all_{model}"
+        experiments.append(ExperimentRun(
+            id=f"P1-{idx:02d}",
+            name=f"Baseline All Crops {model}",
+            phase=1,
+            command=[
+                "python", "run_experiment.py",
+                "--mode", "baseline",
+                "--model", model,
+                "--crop", "tomato,potato,pepper",
+                "--baseline-path", f"data/models/baselines/all_{model}_base.pth",
+                "--epochs", "10",
+                "--lr", "0.001",
+                "--exp-name", exp_name,
+                "--no-confusion",
+            ],
+            description=f"Baseline: All crops combined with {model}",
+            expected_time_minutes=20 if model == "mobilevit" else 15,
+            priority=2,
+        ))
+    
+    return experiments
+
+
+def get_phase2_experiments() -> List[ExperimentRun]:
+    """
+    Phase 2: Passive Interventions - Strong Augmentation (3 experiments)
+
+    Scientific Goal: Prove that simply adding Strong Augmentation (AutoAugment)
+    during source training does NOT close the generalization gap.
+    This justifies the need for Active Learning.
+    """
+    experiments = []
+    crops = ["tomato", "potato", "pepper"]
+
+    for idx, crop in enumerate(crops, 1):
+        exp_name = f"P2_{idx:02d}_strongaug_{crop}"
+        experiments.append(ExperimentRun(
+            id=f"P2-{idx:02d}",
+            name=f"StrongAug {crop.title()}",
+            phase=2,
+            command=[
+                "python", "run_experiment.py",
+                "--mode", "baseline",
+                "--model", "mobilenetv3",
+                "--crop", crop,
+                "--strong-aug",  # The key flag for Phase 2
+                "--baseline-path", f"data/models/baselines/{crop}_strong_base.pth",
+                "--epochs", "10",
+                "--lr", "0.001",
+                "--exp-name", exp_name,
+                "--no-confusion",
+            ],
+            description=f"Passive: Strong Augmentation on {crop} - test if aug closes gap",
+            expected_time_minutes=15,
+            priority=1,
+        ))
+
+    return experiments
+
+
+def get_phase3_experiments() -> List[ExperimentRun]:
+    """
+    Phase 3: Active Learning Strategy Ablation (4 experiments)
+
+    Scientific Goal: Justify the Hybrid (70/30) strategy by showing:
+    1. Random is inefficient (slow slope)
+    2. Entropy suffers "Cold Start" (dips in early rounds)
+    3. Hybrid stabilizes start and exploits decision boundary
+    """
+    experiments = []
+    
+    # Tomato Strategies (3 experiments)
+    strategies = ["random", "entropy", "hybrid"]
+    for idx, strategy in enumerate(strategies, 1):
+        exp_name = f"P3_{idx:02d}_AL_{strategy}_tomato"
+        experiments.append(ExperimentRun(
+            id=f"P3-{idx:02d}",
+            name=f"AL {strategy.title()} (Tomato)",
+            phase=3,
+            command=[
+                "python", "run_experiment.py",
+                "--mode", "active",
+                "--model", "mobilenetv3",
+                "--crop", "tomato",
+                "--strategy", strategy,
+                "--baseline-path", "data/models/baselines/tomato_mobilenetv3_base.pth",
+                "--budget", "10",
+                "--rounds", "5",
+                "--epochs", "5",
+                "--lr", "0.0001",
+                "--exp-name", exp_name,
+                "--no-confusion",
+            ],
+            description=f"Ablation: {strategy} strategy on Tomato",
+            expected_time_minutes=20,
+            priority=1,
+        ))
+    
+    # Potato Hybrid Confirmation (1 experiment)
+    experiments.append(ExperimentRun(
+        id="P3-04",
+        name="AL Hybrid (Potato)",
+        phase=3,
+        command=[
+            "python", "run_experiment.py",
+            "--mode", "active",
+            "--model", "mobilenetv3",
+            "--crop", "potato",
+            "--strategy", "hybrid",
+            "--baseline-path", "data/models/baselines/potato_mobilenetv3_base.pth",
+            "--budget", "10",
+            "--rounds", "5",
+            "--epochs", "5",
+            "--lr", "0.0001",
+            "--exp-name", "P3_04_AL_hybrid_potato",
+            "--no-confusion",
+        ],
+        description="Verify Hybrid strategy works on Potato PDA case",
+        expected_time_minutes=20,
+        priority=1,
+    ))
+
+    return experiments
+
+
+def get_phase4_experiments() -> List[ExperimentRun]:
+    """
+    Phase 4: The Main Contribution - FixMatch & PDA (3 experiments)
+
+    Scientific Goal: Prove that adding FixMatch (SSL) to the Active Learning loop
+    eliminates Negative Transfer, specifically in the Potato (PDA) case.
+    Key Result: Should show 0 predictions for "Healthy" class.
+    """
+    experiments = []
+    crops = ["potato", "tomato", "pepper"]
+
+    for idx, crop in enumerate(crops, 1):
+        exp_name = f"P4_{idx:02d}_fixmatch_{crop}"
+        experiments.append(ExperimentRun(
+            id=f"P4-{idx:02d}",
+            name=f"FixMatch ({crop.title()})",
+            phase=4,
+            command=[
+                "python", "run_experiment.py",
+                "--mode", "active",
+                "--model", "mobilenetv3",
+                "--crop", crop,
+                "--strategy", "hybrid",
+                "--use-fixmatch",  # The key flag
+                "--baseline-path", f"data/models/baselines/{crop}_mobilenetv3_base.pth",
+                "--budget", "10",
+                "--rounds", "5",
+                "--epochs", "15",
+                "--lr", "0.001",
+                "--exp-name", exp_name,
+                "--no-confusion",
+            ],
+            description=f"Main Method: Hybrid + FixMatch on {crop}",
+            expected_time_minutes=35,
+            priority=1,
+        ))
+
+    return experiments
+
+
+def get_phase5_experiments() -> List[ExperimentRun]:
+    """
+    Phase 5: Architecture Benchmark - Efficiency vs Robustness (4 experiments)
+
+    Scientific Goal: Apply winning method (Hybrid + FixMatch) to EfficientNet and MobileViT.
+    Expected: EfficientNet fails (Negative Transfer), MobileViT succeeds but slow.
+    """
+    experiments = []
+
+    configs = [
+        ("efficientnet", "potato", 0.001),
+        ("mobilevit", "potato", 0.0005),  # Lower LR for ViT
+        ("efficientnet", "tomato", 0.001),
+        ("mobilevit", "tomato", 0.0005),
+    ]
+
+    for idx, (model, crop, lr) in enumerate(configs, 1):
+        exp_name = f"P5_{idx:02d}_{model}_{crop}_fixmatch"
+        experiments.append(ExperimentRun(
+            id=f"P5-{idx:02d}",
+            name=f"Benchmark {model} ({crop.title()})",
+            phase=5,
+            command=[
+                "python", "run_experiment.py",
+                "--mode", "active",
+                "--model", model,
+                "--crop", crop,
+                "--strategy", "hybrid",
+                "--use-fixmatch",
+                "--baseline-path", f"data/models/baselines/{crop}_{model}_base.pth",
+                "--budget", "10",
+                "--rounds", "5",
+                "--epochs", "15",
+                "--lr", str(lr),
+                "--exp-name", exp_name,
+                "--no-confusion",
+            ],
+            description=f"SOTA Comparison: {model} on {crop} with FixMatch",
+            expected_time_minutes=40,
+            priority=1,
+        ))
+
+    return experiments
+
+
+def get_all_experiments() -> List[ExperimentRun]:
+    """Get all experiments across all phases (26 total)."""
+    return (
+        get_phase1_experiments() +   # 12 experiments
+        get_phase2_experiments() +   # 3 experiments
+        get_phase3_experiments() +   # 4 experiments
+        get_phase4_experiments() +   # 3 experiments
+        get_phase5_experiments()     # 4 experiments
+    )
+
+
+# =============================================================================
+# EXPERIMENT RUNNER
+# =============================================================================
+
+class ExperimentRunner:
+    """Manages experiment execution and logging."""
+    
+    def __init__(self, output_dir: Path = Path("results/experiments")):
+        self.output_dir = output_dir
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.results: List[ExperimentResult] = []
+        self.run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+    def run_experiment(self, exp: ExperimentRun, dry_run: bool = False) -> ExperimentResult:
+        """Run a single experiment."""
+        print(f"\n{'='*60}")
+        print(f"[{exp.id}] {exp.name}")
+        print(f"{'='*60}")
+        print(f"Description: {exp.description}")
+        print(f"Command: {' '.join(exp.command)}")
+        print(f"Expected time: {exp.expected_time_minutes} minutes")
+        
+        start_time = datetime.now()
+        
+        if dry_run:
+            print("[DRY RUN] Skipping actual execution")
+            return ExperimentResult(
+                id=exp.id,
+                name=exp.name,
+                success=True,
+                start_time=start_time.isoformat(),
+                end_time=start_time.isoformat(),
+                duration_seconds=0,
+                output="[DRY RUN]",
+            )
+        
+        try:
+            print(f"\nStarting at {start_time.strftime('%H:%M:%S')}...")
+            
+            result = subprocess.run(
+                exp.command,
+                capture_output=True,
+                text=True,
+                timeout=exp.expected_time_minutes * 60 * 2,  # 2x timeout
+            )
+            
+            end_time = datetime.now()
+            duration = (end_time - start_time).total_seconds()
+            
+            success = result.returncode == 0
+            
+            # Parse metrics from output
+            metrics = self._parse_metrics(result.stdout)
+            
+            exp_result = ExperimentResult(
+                id=exp.id,
+                name=exp.name,
+                success=success,
+                start_time=start_time.isoformat(),
+                end_time=end_time.isoformat(),
+                duration_seconds=duration,
+                output=result.stdout,
+                error=result.stderr if not success else "",
+                metrics=metrics,
+            )
+            
+            status = "✓ SUCCESS" if success else "✗ FAILED"
+            print(f"\n{status} in {duration:.1f}s")
+            
+            if metrics:
+                print("Metrics:")
+                for k, v in metrics.items():
+                    print(f"  {k}: {v}")
+            
+            return exp_result
+            
+        except subprocess.TimeoutExpired:
+            end_time = datetime.now()
+            return ExperimentResult(
+                id=exp.id,
+                name=exp.name,
+                success=False,
+                start_time=start_time.isoformat(),
+                end_time=end_time.isoformat(),
+                duration_seconds=(end_time - start_time).total_seconds(),
+                error="TIMEOUT",
+            )
+        except Exception as e:
+            end_time = datetime.now()
+            return ExperimentResult(
+                id=exp.id,
+                name=exp.name,
+                success=False,
+                start_time=start_time.isoformat(),
+                end_time=end_time.isoformat(),
+                duration_seconds=(end_time - start_time).total_seconds(),
+                error=str(e),
+            )
+    
+    def _parse_metrics(self, output: str) -> Dict[str, Any]:
+        """Extract metrics from experiment output."""
+        metrics = {}
+        
+        # Look for accuracy patterns
+        for line in output.split('\n'):
+            line_lower = line.lower()
+            if 'field accuracy' in line_lower or 'final accuracy' in line_lower:
+                try:
+                    # Extract percentage
+                    import re
+                    match = re.search(r'(\d+\.?\d*)\s*%', line)
+                    if match:
+                        metrics['field_accuracy'] = float(match.group(1))
+                except:
+                    pass
+            elif 'val acc' in line_lower or 'val:' in line_lower:
+                try:
+                    import re
+                    match = re.search(r'(\d+\.?\d*)\s*%', line)
+                    if match:
+                        metrics['val_accuracy'] = float(match.group(1))
+                except:
+                    pass
+        
+        return metrics
+    
+    def run_phase(self, phase: int, dry_run: bool = False) -> List[ExperimentResult]:
+        """Run all experiments in a phase."""
+        phase_funcs = {
+            1: get_phase1_experiments,
+            2: get_phase2_experiments,
+            3: get_phase3_experiments,
+            4: get_phase4_experiments,
+            5: get_phase5_experiments,
+        }
+        
+        if phase not in phase_funcs:
+            raise ValueError(f"Invalid phase: {phase}. Valid: 1-5")
+
+        experiments = phase_funcs[phase]()
+        print(f"\n{'#'*60}")
+        print(f"# PHASE {phase}: {len(experiments)} experiments")
+        print(f"{'#'*60}")
+        
+        results = []
+        for exp in experiments:
+            result = self.run_experiment(exp, dry_run)
+            results.append(result)
+            self.results.append(result)
+        
+        return results
+    
+    def run_all(self, dry_run: bool = False, phases: Optional[List[int]] = None):
+        """Run all experiments."""
+        phases = phases or [1, 2, 3, 4, 5]
+
+        total_time = sum(
+            exp.expected_time_minutes 
+            for exp in get_all_experiments() 
+            if exp.phase in phases
+        )
+        
+        print(f"\n{'#'*60}")
+        print(f"# PDA EXPERIMENT SUITE")
+        print(f"# Run ID: {self.run_id}")
+        print(f"# Phases: {phases}")
+        print(f"# Estimated total time: {total_time} minutes ({total_time/60:.1f} hours)")
+        print(f"{'#'*60}")
+        
+        for phase in phases:
+            self.run_phase(phase, dry_run)
+        
+        self.save_results()
+        self.print_summary()
+    
+    def save_results(self):
+        """Save results to JSON."""
+        results_file = self.output_dir / f"results_{self.run_id}.json"
+        
+        with open(results_file, 'w') as f:
+            json.dump([asdict(r) for r in self.results], f, indent=2)
+        
+        print(f"\nResults saved to: {results_file}")
+    
+    def print_summary(self):
+        """Print summary of all results."""
+        print(f"\n{'='*60}")
+        print("EXPERIMENT SUMMARY")
+        print(f"{'='*60}")
+        
+        total = len(self.results)
+        success = sum(1 for r in self.results if r.success)
+        failed = total - success
+        
+        print(f"Total: {total}, Success: {success}, Failed: {failed}")
+        
+        if failed > 0:
+            print("\nFailed experiments:")
+            for r in self.results:
+                if not r.success:
+                    print(f"  - [{r.id}] {r.name}: {r.error[:100]}")
+        
+        # Print metrics table
+        print("\nResults by experiment:")
+        print("-" * 60)
+        for r in self.results:
+            status = "✓" if r.success else "✗"
+            acc = r.metrics.get('field_accuracy', 'N/A')
+            if isinstance(acc, float):
+                acc = f"{acc:.2f}%"
+            print(f"  {status} [{r.id}] {r.name}: {acc}")
+
+
+# =============================================================================
+# COLAB SETUP
+# =============================================================================
+
+def setup_colab():
+    """Setup for Google Colab environment."""
+    if not IN_COLAB:
+        print("Not running in Colab, skipping Colab setup")
+        return
+    
+    print("Setting up Colab environment...")
+    
+    # Mount Google Drive
+    from google.colab import drive
+    drive.mount('/content/drive')
+    
+    # Check GPU
+    import torch
+    if torch.cuda.is_available():
+        print(f"GPU: {torch.cuda.get_device_name(0)}")
+        print(f"Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+    else:
+        print("WARNING: No GPU detected!")
+    
+    # Install dependencies if needed
+    # !pip install timm torchvision scikit-learn
+
+
+def generate_colab_notebook():
+    """Generate a Colab-ready notebook."""
+    notebook = {
+        "nbformat": 4,
+        "nbformat_minor": 0,
+        "metadata": {
+            "colab": {"name": "PDA_Experiments.ipynb", "provenance": []},
+            "kernelspec": {"name": "python3", "display_name": "Python 3"},
+            "accelerator": "GPU"
+        },
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": ["# PDA Experiment Suite\n", "Run all experiments for the paper."]
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": [
+                    "# Mount Google Drive\n",
+                    "from google.colab import drive\n",
+                    "drive.mount('/content/drive')\n",
+                    "\n",
+                    "# Clone or copy your repo\n",
+                    "%cd /content\n",
+                    "!git clone https://github.com/YOUR_REPO/dataset-processing.git || echo 'Already cloned'\n",
+                    "%cd dataset-processing\n",
+                ],
+                "execution_count": None,
+                "outputs": []
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": [
+                    "# Install dependencies\n",
+                    "!pip install -q timm torchvision scikit-learn matplotlib\n",
+                ],
+                "execution_count": None,
+                "outputs": []
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": [
+                    "# Check GPU\n",
+                    "import torch\n",
+                    "print(f'GPU: {torch.cuda.get_device_name(0)}')\n",
+                    "print(f'Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB')\n",
+                ],
+                "execution_count": None,
+                "outputs": []
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": [
+                    "# Run Phase 1 (Baselines)\n",
+                    "!python colab_experiment_runner.py --phase 1\n",
+                ],
+                "execution_count": None,
+                "outputs": []
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": [
+                    "# Run Phase 2 (AL Strategies)\n",
+                    "!python colab_experiment_runner.py --phase 2\n",
+                ],
+                "execution_count": None,
+                "outputs": []
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": [
+                    "# Run Phase 3 (FixMatch)\n",
+                    "!python colab_experiment_runner.py --phase 3\n",
+                ],
+                "execution_count": None,
+                "outputs": []
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": [
+                    "# Run Phase 4 (Architecture Comparison)\n",
+                    "!python colab_experiment_runner.py --phase 4\n",
+                ],
+                "execution_count": None,
+                "outputs": []
+            },
+        ]
+    }
+    
+    with open("PDA_Experiments.ipynb", 'w') as f:
+        json.dump(notebook, f, indent=2)
+    
+    print("Generated: PDA_Experiments.ipynb")
+
+
+# =============================================================================
+# MAIN
+# =============================================================================
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="PDA Experiment Runner for Colab")
+    parser.add_argument('--phase', type=int, choices=[1, 2, 3, 4, 5],
+                        help='Run specific phase only')
+    parser.add_argument('--all', action='store_true',
+                        help='Run all phases')
+    parser.add_argument('--dry-run', action='store_true',
+                        help='Preview experiments without running')
+    parser.add_argument('--list', action='store_true',
+                        help='List all experiments')
+    parser.add_argument('--generate-notebook', action='store_true',
+                        help='Generate Colab notebook')
+    parser.add_argument('--output-dir', type=str, default='results/experiments',
+                        help='Output directory for results')
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    
+    if args.generate_notebook:
+        generate_colab_notebook()
+        return
+    
+    if args.list:
+        print("\nALL EXPERIMENTS:")
+        print("=" * 60)
+        for exp in get_all_experiments():
+            print(f"  [{exp.id}] {exp.name} ({exp.expected_time_minutes} min)")
+        
+        total_time = sum(e.expected_time_minutes for e in get_all_experiments())
+        print(f"\nTotal estimated time: {total_time} minutes ({total_time/60:.1f} hours)")
+        return
+    
+    runner = ExperimentRunner(Path(args.output_dir))
+    
+    if args.phase:
+        runner.run_phase(args.phase, args.dry_run)
+        runner.save_results()
+        runner.print_summary()
+    elif args.all:
+        runner.run_all(args.dry_run)
+    else:
+        # Default: dry run to show what would happen
+        print("No action specified. Use --phase N, --all, or --dry-run")
+        print("Use --list to see all experiments")
+        print("Use --help for more options")
+
+
+if __name__ == '__main__':
+    main()
+
