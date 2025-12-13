@@ -1,0 +1,166 @@
+{
+    "experiment_id": "P3_04_AL_hybrid_potato",
+    "timestamp": "20251213_205632",
+    "history": [],
+    "al_trajectory": [
+        {
+            "round": 0,
+            "labels": 0,
+            "accuracy": 51.11111111111111,
+            "timestamp": "2025-12-13T20:56:34.101916"
+        },
+        {
+            "round": 1,
+            "labels": 10,
+            "accuracy": 53.333333333333336,
+            "timestamp": "2025-12-13T20:56:39.925060",
+            "new_indices": [
+                220,
+                78,
+                176,
+                40,
+                82,
+                31,
+                180,
+                51,
+                158,
+                150
+            ],
+            "pool_remaining": 167
+        },
+        {
+            "round": 2,
+            "labels": 20,
+            "accuracy": 53.333333333333336,
+            "timestamp": "2025-12-13T20:56:47.967459",
+            "new_indices": [
+                136,
+                199,
+                39,
+                23,
+                217,
+                163,
+                159,
+                128,
+                206,
+                154
+            ],
+            "pool_remaining": 157
+        },
+        {
+            "round": 3,
+            "labels": 30,
+            "accuracy": 55.55555555555556,
+            "timestamp": "2025-12-13T20:56:56.376054",
+            "new_indices": [
+                28,
+                185,
+                66,
+                97,
+                133,
+                47,
+                24,
+                135,
+                101,
+                161
+            ],
+            "pool_remaining": 147
+        },
+        {
+            "round": 4,
+            "labels": 40,
+            "accuracy": 57.77777777777777,
+            "timestamp": "2025-12-13T20:57:06.746983",
+            "new_indices": [
+                9,
+                165,
+                110,
+                0,
+                139,
+                132,
+                212,
+                177,
+                27,
+                141
+            ],
+            "pool_remaining": 137
+        },
+        {
+            "round": 5,
+            "labels": 50,
+            "accuracy": 60.0,
+            "timestamp": "2025-12-13T20:57:18.331505",
+            "new_indices": [
+                207,
+                122,
+                155,
+                193,
+                80,
+                29,
+                81,
+                5,
+                98,
+                153
+            ],
+            "pool_remaining": 127
+        }
+    ],
+    "final_accuracy": 60.0,
+    "final_confusion": [
+        [
+            15,
+            0,
+            8
+        ],
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            10,
+            0,
+            12
+        ]
+    ],
+    "final_report": {
+        "potato_early_blight": {
+            "precision": 0.6,
+            "recall": 0.6521739130434783,
+            "f1-score": 0.625,
+            "support": 23.0
+        },
+        "potato_healthy": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 0.0
+        },
+        "potato_late_blight": {
+            "precision": 0.6,
+            "recall": 0.5454545454545454,
+            "f1-score": 0.5714285714285714,
+            "support": 22.0
+        },
+        "accuracy": 0.6,
+        "macro avg": {
+            "precision": 0.39999999999999997,
+            "recall": 0.3992094861660079,
+            "f1-score": 0.3988095238095238,
+            "support": 45.0
+        },
+        "weighted avg": {
+            "precision": 0.6,
+            "recall": 0.6,
+            "f1-score": 0.5988095238095238,
+            "support": 45.0
+        }
+    },
+    "latency_stats": null,
+    "data_stats": {
+        "train_count": 1721,
+        "val_count": 431,
+        "pool_count": 177,
+        "test_count": 45
+    }
+}

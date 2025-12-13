@@ -1,0 +1,125 @@
+{
+    "experiment_id": "P1_05_baseline_potato_efficientnet",
+    "timestamp": "20251213_180331",
+    "history": [
+        {
+            "epoch": 1,
+            "train_loss": 0.5418499941299699,
+            "val_acc": 97.91183294663573,
+            "timestamp": "2025-12-13T18:03:52.221254"
+        },
+        {
+            "epoch": 2,
+            "train_loss": 0.06578622904986854,
+            "val_acc": 99.53596287703016,
+            "timestamp": "2025-12-13T18:04:12.024943"
+        },
+        {
+            "epoch": 3,
+            "train_loss": 0.13672259251332697,
+            "val_acc": 96.75174013921114,
+            "timestamp": "2025-12-13T18:04:31.596997"
+        },
+        {
+            "epoch": 4,
+            "train_loss": 1.0758565075316087,
+            "val_acc": 96.2877030162413,
+            "timestamp": "2025-12-13T18:04:51.386602"
+        },
+        {
+            "epoch": 5,
+            "train_loss": 0.306477941520926,
+            "val_acc": 92.11136890951276,
+            "timestamp": "2025-12-13T18:05:11.028420"
+        },
+        {
+            "epoch": 6,
+            "train_loss": 0.10824942768225877,
+            "val_acc": 96.98375870069606,
+            "timestamp": "2025-12-13T18:05:30.603909"
+        },
+        {
+            "epoch": 7,
+            "train_loss": 0.10729821598700558,
+            "val_acc": 99.07192575406033,
+            "timestamp": "2025-12-13T18:05:50.258942"
+        },
+        {
+            "epoch": 8,
+            "train_loss": 0.057764197094204266,
+            "val_acc": 99.30394431554524,
+            "timestamp": "2025-12-13T18:06:09.760864"
+        },
+        {
+            "epoch": 9,
+            "train_loss": 0.06015317774020972,
+            "val_acc": 100.0,
+            "timestamp": "2025-12-13T18:06:29.323125"
+        },
+        {
+            "epoch": 10,
+            "train_loss": 0.04883380251326512,
+            "val_acc": 99.30394431554524,
+            "timestamp": "2025-12-13T18:06:48.908183"
+        }
+    ],
+    "al_trajectory": [],
+    "final_accuracy": 60.0,
+    "final_confusion": [
+        [
+            18,
+            0,
+            5
+        ],
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            12,
+            1,
+            9
+        ]
+    ],
+    "final_report": {
+        "potato_early_blight": {
+            "precision": 0.6,
+            "recall": 0.782608695652174,
+            "f1-score": 0.6792452830188679,
+            "support": 23.0
+        },
+        "potato_healthy": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 0.0
+        },
+        "potato_late_blight": {
+            "precision": 0.6428571428571429,
+            "recall": 0.4090909090909091,
+            "f1-score": 0.5,
+            "support": 22.0
+        },
+        "accuracy": 0.6,
+        "macro avg": {
+            "precision": 0.4142857142857143,
+            "recall": 0.39723320158102765,
+            "f1-score": 0.3930817610062893,
+            "support": 45.0
+        },
+        "weighted avg": {
+            "precision": 0.6209523809523809,
+            "recall": 0.6,
+            "f1-score": 0.5916142557651991,
+            "support": 45.0
+        }
+    },
+    "latency_stats": null,
+    "data_stats": {
+        "train_count": 1721,
+        "val_count": 431,
+        "pool_count": 177,
+        "test_count": 45
+    }
+}

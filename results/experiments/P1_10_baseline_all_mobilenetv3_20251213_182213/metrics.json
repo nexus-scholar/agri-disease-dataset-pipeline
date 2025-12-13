@@ -1,0 +1,332 @@
+{
+    "experiment_id": "P1_10_baseline_all_mobilenetv3",
+    "timestamp": "20251213_182213",
+    "history": [
+        {
+            "epoch": 1,
+            "train_loss": 0.3895715235253863,
+            "val_acc": 91.21951219512195,
+            "timestamp": "2025-12-13T18:24:09.449941"
+        },
+        {
+            "epoch": 2,
+            "train_loss": 0.19370215540151253,
+            "val_acc": 95.99303135888502,
+            "timestamp": "2025-12-13T18:26:04.518261"
+        },
+        {
+            "epoch": 3,
+            "train_loss": 0.1297403847001633,
+            "val_acc": 97.24738675958189,
+            "timestamp": "2025-12-13T18:28:00.093995"
+        },
+        {
+            "epoch": 4,
+            "train_loss": 0.1418826011759242,
+            "val_acc": 96.65505226480836,
+            "timestamp": "2025-12-13T18:29:54.836984"
+        },
+        {
+            "epoch": 5,
+            "train_loss": 0.11482490094143166,
+            "val_acc": 93.55400696864112,
+            "timestamp": "2025-12-13T18:31:49.570665"
+        },
+        {
+            "epoch": 6,
+            "train_loss": 0.11215903780146132,
+            "val_acc": 84.11149825783973,
+            "timestamp": "2025-12-13T18:33:44.395510"
+        },
+        {
+            "epoch": 7,
+            "train_loss": 0.1003864743736795,
+            "val_acc": 98.397212543554,
+            "timestamp": "2025-12-13T18:35:38.780949"
+        },
+        {
+            "epoch": 8,
+            "train_loss": 0.10357995546770746,
+            "val_acc": 96.51567944250871,
+            "timestamp": "2025-12-13T18:37:33.648833"
+        },
+        {
+            "epoch": 9,
+            "train_loss": 0.0770299765469713,
+            "val_acc": 88.78048780487805,
+            "timestamp": "2025-12-13T18:39:28.571852"
+        },
+        {
+            "epoch": 10,
+            "train_loss": 0.09321153230962219,
+            "val_acc": 95.78397212543554,
+            "timestamp": "2025-12-13T18:41:23.293790"
+        }
+    ],
+    "al_trajectory": [],
+    "final_accuracy": 12.682926829268293,
+    "final_confusion": [
+        [
+            0,
+            7,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            8,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            9,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3,
+            0,
+            0,
+            2
+        ],
+        [
+            0,
+            7,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            11,
+            0,
+            0,
+            3
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10,
+            1,
+            0,
+            1
+        ],
+        [
+            0,
+            9,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            9,
+            0,
+            0,
+            2
+        ],
+        [
+            0,
+            11,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            9,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            7,
+            0,
+            0,
+            1
+        ],
+        [
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            13,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            17,
+            1,
+            0,
+            1
+        ],
+        [
+            0,
+            4,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            1,
+            1
+        ],
+        [
+            0,
+            14,
+            0,
+            0,
+            0,
+            1,
+            2,
+            0,
+            4,
+            1,
+            0,
+            1
+        ]
+    ],
+    "final_report": {
+        "pepper_bell_bacterial_spot": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 16.0
+        },
+        "pepper_bell_healthy": {
+            "precision": 0.10714285714285714,
+            "recall": 0.6428571428571429,
+            "f1-score": 0.1836734693877551,
+            "support": 14.0
+        },
+        "potato_early_blight": {
+            "precision": 0.5,
+            "recall": 0.043478260869565216,
+            "f1-score": 0.08,
+            "support": 23.0
+        },
+        "potato_healthy": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 0.0
+        },
+        "potato_late_blight": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 16.0
+        },
+        "tomato_bacterial_spot": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 22.0
+        },
+        "tomato_early_blight": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 18.0
+        },
+        "tomato_healthy": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 17.0
+        },
+        "tomato_late_blight": {
+            "precision": 0.13829787234042554,
+            "recall": 0.6842105263157895,
+            "f1-score": 0.23008849557522124,
+            "support": 19.0
+        },
+        "tomato_mold": {
+            "precision": 0.25,
+            "recall": 0.04,
+            "f1-score": 0.06896551724137931,
+            "support": 25.0
+        },
+        "tomato_mosaic_virus": {
+            "precision": 1.0,
+            "recall": 0.08333333333333333,
+            "f1-score": 0.15384615384615385,
+            "support": 12.0
+        },
+        "tomato_septoria_spot": {
+            "precision": 0.08333333333333333,
+            "recall": 0.043478260869565216,
+            "f1-score": 0.05714285714285714,
+            "support": 23.0
+        },
+        "accuracy": 0.12682926829268293,
+        "macro avg": {
+            "precision": 0.17323117190138468,
+            "recall": 0.12811312702044966,
+            "f1-score": 0.06447637443278055,
+            "support": 205.0
+        },
+        "weighted avg": {
+            "precision": 0.17460646946894998,
+            "recall": 0.12682926829268293,
+            "f1-score": 0.066671646238204,
+            "support": 205.0
+        }
+    },
+    "latency_stats": null,
+    "data_stats": {
+        "train_count": 11480,
+        "val_count": 2870,
+        "pool_count": 817,
+        "test_count": 205
+    }
+}

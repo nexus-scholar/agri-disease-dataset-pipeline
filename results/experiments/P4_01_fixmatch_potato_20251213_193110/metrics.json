@@ -1,0 +1,166 @@
+{
+    "experiment_id": "P4_01_fixmatch_potato",
+    "timestamp": "20251213_193110",
+    "history": [],
+    "al_trajectory": [
+        {
+            "round": 0,
+            "labels": 0,
+            "accuracy": 51.11111111111111,
+            "timestamp": "2025-12-13T19:31:11.902033"
+        },
+        {
+            "round": 1,
+            "labels": 10,
+            "accuracy": 48.888888888888886,
+            "timestamp": "2025-12-13T19:31:40.160997",
+            "new_indices": [
+                220,
+                78,
+                176,
+                40,
+                82,
+                31,
+                180,
+                51,
+                158,
+                150
+            ],
+            "pool_remaining": 167
+        },
+        {
+            "round": 2,
+            "labels": 20,
+            "accuracy": 64.44444444444444,
+            "timestamp": "2025-12-13T19:32:23.973102",
+            "new_indices": [
+                38,
+                39,
+                136,
+                43,
+                171,
+                137,
+                159,
+                80,
+                15,
+                144
+            ],
+            "pool_remaining": 157
+        },
+        {
+            "round": 3,
+            "labels": 30,
+            "accuracy": 42.22222222222222,
+            "timestamp": "2025-12-13T19:33:05.717681",
+            "new_indices": [
+                124,
+                85,
+                123,
+                148,
+                200,
+                143,
+                170,
+                4,
+                0,
+                153
+            ],
+            "pool_remaining": 147
+        },
+        {
+            "round": 4,
+            "labels": 40,
+            "accuracy": 53.333333333333336,
+            "timestamp": "2025-12-13T19:34:27.027877",
+            "new_indices": [
+                56,
+                22,
+                6,
+                178,
+                113,
+                45,
+                175,
+                167,
+                96,
+                215
+            ],
+            "pool_remaining": 137
+        },
+        {
+            "round": 5,
+            "labels": 50,
+            "accuracy": 53.333333333333336,
+            "timestamp": "2025-12-13T19:36:29.865894",
+            "new_indices": [
+                117,
+                7,
+                131,
+                138,
+                139,
+                198,
+                135,
+                177,
+                62,
+                161
+            ],
+            "pool_remaining": 127
+        }
+    ],
+    "final_accuracy": 53.333333333333336,
+    "final_confusion": [
+        [
+            13,
+            1,
+            9
+        ],
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            11,
+            0,
+            11
+        ]
+    ],
+    "final_report": {
+        "potato_early_blight": {
+            "precision": 0.5416666666666666,
+            "recall": 0.5652173913043478,
+            "f1-score": 0.5531914893617021,
+            "support": 23.0
+        },
+        "potato_healthy": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 0.0
+        },
+        "potato_late_blight": {
+            "precision": 0.55,
+            "recall": 0.5,
+            "f1-score": 0.5238095238095238,
+            "support": 22.0
+        },
+        "accuracy": 0.5333333333333333,
+        "macro avg": {
+            "precision": 0.36388888888888893,
+            "recall": 0.3550724637681159,
+            "f1-score": 0.359000337723742,
+            "support": 45.0
+        },
+        "weighted avg": {
+            "precision": 0.5457407407407407,
+            "recall": 0.5333333333333333,
+            "f1-score": 0.5388269728695261,
+            "support": 45.0
+        }
+    },
+    "latency_stats": null,
+    "data_stats": {
+        "train_count": 1721,
+        "val_count": 431,
+        "pool_count": 177,
+        "test_count": 45
+    }
+}

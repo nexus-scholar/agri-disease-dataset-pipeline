@@ -1,0 +1,5 @@
+crop,strategy,field_acc,final_labels
+potato,hybrid,60.0,50
+tomato,hybrid,31.343283582089555,50
+tomato,random,30.597014925373134,50
+tomato,entropy,29.850746268656714,50

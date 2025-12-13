@@ -1,0 +1,4 @@
+model,pepper,potato,tomato
+efficientnet,,62.22,35.82
+mobilenetv3,62.96,53.33,32.09
+mobilevit,,64.44,33.58

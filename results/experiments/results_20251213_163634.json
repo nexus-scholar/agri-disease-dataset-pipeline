@@ -1,0 +1,134 @@
+[
+  {
+    "id": "P1-01",
+    "name": "Baseline Tomato mobilenetv3",
+    "success": false,
+    "start_time": "2025-12-13T16:36:34.592820",
+    "end_time": "2025-12-13T16:36:44.417675",
+    "duration_seconds": 9.824855,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-02",
+    "name": "Baseline Tomato efficientnet",
+    "success": false,
+    "start_time": "2025-12-13T16:36:44.417805",
+    "end_time": "2025-12-13T16:36:48.938432",
+    "duration_seconds": 4.520627,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-03",
+    "name": "Baseline Tomato mobilevit",
+    "success": false,
+    "start_time": "2025-12-13T16:36:48.938610",
+    "end_time": "2025-12-13T16:36:52.951991",
+    "duration_seconds": 4.013381,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-04",
+    "name": "Baseline Potato mobilenetv3",
+    "success": false,
+    "start_time": "2025-12-13T16:36:52.952104",
+    "end_time": "2025-12-13T16:36:56.684676",
+    "duration_seconds": 3.732572,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-05",
+    "name": "Baseline Potato efficientnet",
+    "success": false,
+    "start_time": "2025-12-13T16:36:56.684787",
+    "end_time": "2025-12-13T16:37:00.499011",
+    "duration_seconds": 3.814224,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-06",
+    "name": "Baseline Potato mobilevit",
+    "success": false,
+    "start_time": "2025-12-13T16:37:00.499170",
+    "end_time": "2025-12-13T16:37:04.983239",
+    "duration_seconds": 4.484069,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-07",
+    "name": "Baseline Pepper mobilenetv3",
+    "success": false,
+    "start_time": "2025-12-13T16:37:04.983362",
+    "end_time": "2025-12-13T16:37:08.625714",
+    "duration_seconds": 3.642352,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-08",
+    "name": "Baseline Pepper efficientnet",
+    "success": false,
+    "start_time": "2025-12-13T16:37:08.625837",
+    "end_time": "2025-12-13T16:37:12.289653",
+    "duration_seconds": 3.663816,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-09",
+    "name": "Baseline Pepper mobilevit",
+    "success": false,
+    "start_time": "2025-12-13T16:37:12.289773",
+    "end_time": "2025-12-13T16:37:16.989630",
+    "duration_seconds": 4.699857,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-10",
+    "name": "Baseline All Crops mobilenetv3",
+    "success": false,
+    "start_time": "2025-12-13T16:37:16.989756",
+    "end_time": "2025-12-13T16:37:20.844242",
+    "duration_seconds": 3.854486,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-11",
+    "name": "Baseline All Crops efficientnet",
+    "success": false,
+    "start_time": "2025-12-13T16:37:20.844364",
+    "end_time": "2025-12-13T16:37:24.405619",
+    "duration_seconds": 3.561255,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  },
+  {
+    "id": "P1-12",
+    "name": "Baseline All Crops mobilevit",
+    "success": false,
+    "start_time": "2025-12-13T16:37:24.405732",
+    "end_time": "2025-12-13T16:37:28.172742",
+    "duration_seconds": 3.76701,
+    "output": "",
+    "error": "Traceback (most recent call last):\n  File \"/content/agri-disease-dataset-pipeline/run_experiment.py\", line 17, in <module>\n    from src.runner import main\n  File \"/content/agri-disease-dataset-pipeline/src/__init__.py\", line 17, in <module>\n    from . import models\nImportError: cannot import name 'models' from partially initialized module 'src' (most likely due to a circular import) (/content/agri-disease-dataset-pipeline/src/__init__.py)\n",
+    "metrics": {}
+  }
+]
