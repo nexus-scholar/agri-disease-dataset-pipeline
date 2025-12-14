@@ -469,6 +469,9 @@ def run_active_learning(args, device):
 
 
 def main():
+    import time
+    t_start = time.time()
+
     args = parse_args()
 
     # Set random seeds
@@ -478,9 +481,12 @@ def main():
     np.random.seed(args.seed)
     random.seed(args.seed)
 
-    # Device
+    # Device - CUDA initialization can take several seconds on first call
+    t0 = time.time()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Using device: {device}")
+    cuda_time = time.time() - t0
+
+    print(f"Using device: {device} (init: {cuda_time:.1f}s, total startup: {time.time() - t_start:.1f}s)", flush=True)
 
     if args.mode == 'baseline':
         run_baseline(args, device)
