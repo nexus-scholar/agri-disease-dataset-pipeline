@@ -280,11 +280,12 @@ def load_data_modules(
     """
     import os
     import platform
+    import time
+    import torch  # Import torch at the start to avoid UnboundLocalError
 
     source_dir = Path(source_dir or PLANTVILLAGE_DIR)
     target_dir = Path(target_dir or PLANTDOC_DIR)
 
-    import time
     t_start = time.time()
 
     # Auto-detect num_workers if not specified
@@ -377,7 +378,6 @@ def load_data_modules(
     val_subset = Subset(source_val, list(val_indices))
 
     # Check if CUDA is available for pin_memory optimization
-    import torch
     pin_memory = torch.cuda.is_available() and num_workers > 0
 
     train_loader = DataLoader(
