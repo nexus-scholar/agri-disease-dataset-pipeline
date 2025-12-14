@@ -81,8 +81,8 @@ def get_phase1_experiments() -> List[ExperimentRun]:
         for model in models:
             idx += 1
             exp_name = f"P1_{idx:02d}_baseline_{crop}_{model}"
-            # Larger batch size for A100 (64 for light models, 32 for ViT)
-            batch_size = 32 if model == "mobilevit" else 64
+            # Larger batch size for A100 (128 for light models, 64 for ViT)
+            batch_size = 64 if model == "mobilevit" else 128
             experiments.append(ExperimentRun(
                 id=f"P1-{idx:02d}",
                 name=f"Baseline {crop.title()} {model}",
@@ -100,7 +100,7 @@ def get_phase1_experiments() -> List[ExperimentRun]:
                     "--no-confusion",
                 ],
                 description=f"Baseline: {crop} with {model} - measure generalization gap",
-                expected_time_minutes=10 if model == "mobilevit" else 5,  # Faster with larger batch
+                expected_time_minutes=5 if model == "mobilevit" else 3,  # Much faster with A100
                 priority=1,
             ))
     
@@ -157,12 +157,12 @@ def get_phase2_experiments() -> List[ExperimentRun]:
                 "--baseline-path", f"data/models/baselines/{crop}_strong_base.pth",
                 "--epochs", "10",
                 "--lr", "0.001",
-                "--batch-size", "64",
+                "--batch-size", "128",
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
             description=f"Passive: Strong Augmentation on {crop} - test if aug closes gap",
-            expected_time_minutes=8,  # Faster with larger batch
+            expected_time_minutes=4,  # Faster with A100
             priority=1,
         ))
 
@@ -199,12 +199,12 @@ def get_phase3_experiments() -> List[ExperimentRun]:
                 "--rounds", "5",
                 "--epochs", "5",
                 "--lr", "0.0001",
-                "--batch-size", "32",
+                "--batch-size", "64",
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
             description=f"Ablation: {strategy} strategy on Tomato",
-            expected_time_minutes=15,
+            expected_time_minutes=10,
             priority=1,
         ))
     
@@ -224,12 +224,12 @@ def get_phase3_experiments() -> List[ExperimentRun]:
             "--rounds", "5",
             "--epochs", "5",
             "--lr", "0.0001",
-            "--batch-size", "32",
+            "--batch-size", "64",
             "--exp-name", "P3_04_AL_hybrid_potato",
             "--no-confusion",
         ],
         description="Verify Hybrid strategy works on Potato PDA case",
-        expected_time_minutes=15,
+        expected_time_minutes=8,
         priority=1,
     ))
 
@@ -279,12 +279,12 @@ def get_phase4_experiments() -> List[ExperimentRun]:
                 "--rounds", "5",
                 "--epochs", "15",
                 "--lr", "0.001",
-                "--batch-size", "32",
+                "--batch-size", "64",
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
             description=f"{'PRIMARY: ' if crop == 'tomato' else ''}Hybrid + FixMatch on {crop} (PDA)",
-            expected_time_minutes=25,  # Faster with larger batch
+            expected_time_minutes=15,  # Faster with A100
             priority=1,
         ))
 
@@ -304,10 +304,10 @@ def get_phase5_experiments() -> List[ExperimentRun]:
     # Focus on Tomato as primary benchmark crop (746 target samples)
     # (model, crop, lr, batch_size)
     configs = [
-        ("efficientnet", "tomato", 0.001, 48),   # EfficientNet can handle larger batches
-        ("mobilevit", "tomato", 0.0005, 24),      # ViT needs smaller batches (memory)
-        ("efficientnet", "potato", 0.001, 48),   # Secondary validation
-        ("mobilevit", "potato", 0.0005, 24),      # Secondary validation
+        ("efficientnet", "tomato", 0.001, 96),    # EfficientNet can handle larger batches
+        ("mobilevit", "tomato", 0.0005, 48),      # ViT needs smaller batches (memory)
+        ("efficientnet", "potato", 0.001, 96),   # Secondary validation
+        ("mobilevit", "potato", 0.0005, 48),      # Secondary validation
     ]
 
     for idx, (model, crop, lr, batch_size) in enumerate(configs, 1):
@@ -334,7 +334,7 @@ def get_phase5_experiments() -> List[ExperimentRun]:
                 "--no-confusion",
             ],
             description=f"{'PRIMARY: ' if crop == 'tomato' else ''}SOTA {model} on {crop} + FixMatch",
-            expected_time_minutes=30 if model == "mobilevit" else 25,
+            expected_time_minutes=20 if model == "mobilevit" else 15,
             priority=1,
         ))
 
@@ -748,10 +748,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    
-    if args.generate_notebook:
-        generate_colab_notebook()
-        return
     
     if args.list:
         print("\nALL EXPERIMENTS:")

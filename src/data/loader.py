@@ -294,9 +294,9 @@ def load_data_modules(
             # Windows has issues with multiprocessing in DataLoader
             num_workers = 0
         else:
-            # Linux/Colab: use multiple workers for faster data loading
-            # Use min of 4 or available CPUs
-            num_workers = min(4, os.cpu_count() or 1)
+            # Linux/Colab: use more workers for A100 throughput
+            # 8 workers with prefetch_factor=4 should saturate most GPUs
+            num_workers = min(8, os.cpu_count() or 4)
         if verbose:
             print(f"  [Data] Auto-detected num_workers={num_workers} ({platform.system()})", flush=True)
 
@@ -377,22 +377,30 @@ def load_data_modules(
     train_subset = Subset(source_train, list(train_indices))
     val_subset = Subset(source_val, list(val_indices))
 
-    # Check if CUDA is available for pin_memory optimization
+    # Optimize DataLoader settings for GPU training
     pin_memory = torch.cuda.is_available() and num_workers > 0
+    persistent = num_workers > 0  # Keep workers alive between epochs
+    prefetch = 4 if num_workers > 0 else None  # Prefetch more batches
+
+    # Common DataLoader kwargs for performance
+    loader_kwargs = {
+        'batch_size': batch_size,
+        'num_workers': num_workers,
+        'pin_memory': pin_memory,
+        'persistent_workers': persistent,
+    }
+    if prefetch is not None:
+        loader_kwargs['prefetch_factor'] = prefetch
 
     train_loader = DataLoader(
         train_subset,
-        batch_size=batch_size,
         shuffle=True,
-        num_workers=num_workers,
-        pin_memory=pin_memory,
+        **loader_kwargs,
     )
     val_loader = DataLoader(
         val_subset,
-        batch_size=batch_size,
         shuffle=False,
-        num_workers=num_workers,
-        pin_memory=pin_memory,
+        **loader_kwargs,
     )
 
     # Split target into pool/test
@@ -414,10 +422,8 @@ def load_data_modules(
 
     test_loader = DataLoader(
         test_subset,
-        batch_size=batch_size,
         shuffle=False,
-        num_workers=num_workers,
-        pin_memory=pin_memory,
+        **loader_kwargs,
     )
 
     print(f"  [Data] Train: {len(train_subset)}, Val: {len(val_subset)}, Pool: {len(pool_subset)}, Test: {len(test_subset)}", flush=True)
