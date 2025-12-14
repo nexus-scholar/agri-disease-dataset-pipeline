@@ -5,11 +5,44 @@ import csv
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, List
 
 from .dataset_metadata import is_valid_image
 from .fs_utils import copy_file, safe_rmtree
 from .label_utils import normalize_label
+
+
+def _find_class_folders_recursive(root: Path, max_depth: int = 3) -> List[Path]:
+    """
+    Recursively find all class folders (folders containing images).
+
+    A class folder is defined as a folder that:
+    1. Contains image files directly
+    2. Has a name that looks like a class label (contains underscore)
+    """
+    class_folders = []
+
+    def scan(path: Path, depth: int):
+        if depth > max_depth:
+            return
+
+        if not path.is_dir():
+            return
+
+        # Check if this folder contains images
+        images = [f for f in path.iterdir() if f.is_file() and is_valid_image(f)]
+
+        if images and '_' in path.name:
+            # This is a class folder
+            class_folders.append(path)
+        else:
+            # Recurse into subfolders
+            for subfolder in path.iterdir():
+                if subfolder.is_dir() and not subfolder.name.startswith('.'):
+                    scan(subfolder, depth + 1)
+
+    scan(root, 0)
+    return class_folders
 
 
 def process_plantvillage(source_dir: Path, output_dir: Path) -> list[dict[str, str]]:
@@ -26,36 +59,15 @@ def process_plantvillage(source_dir: Path, output_dir: Path) -> list[dict[str, s
         print(f"ERROR: Source folder not found: {source_dir}")
         return []
 
-    # Handle nested folder structure - check for both case variants
-    # The PlantVillage zip sometimes has both "PlantVillage" and "plantvillage" folders
-    source_dirs = [source_dir]  # Start with the main directory
+    # Recursively find all class folders regardless of nesting structure
+    print(f"Scanning {source_dir} for class folders...")
+    all_class_folders = _find_class_folders_recursive(source_dir)
 
-    # Check for nested folders with various case combinations
-    for nested_name in ["PlantVillage", "plantvillage", "Plantvillage"]:
-        nested = source_dir / nested_name
-        if nested.exists() and nested.is_dir():
-            nested_dirs = [d for d in nested.iterdir() if d.is_dir()]
-            if nested_dirs and any(d.name not in {"train", "test"} for d in nested_dirs):
-                print(f"Found nested folder: {nested}")
-                source_dirs.append(nested)
+    if not all_class_folders:
+        print(f"ERROR: No class folders found in {source_dir}")
+        return []
 
-    # Also check parent directory for case variants (in case extraction created siblings)
-    parent = source_dir.parent
-    for sibling_name in ["PlantVillage", "plantvillage", "Plantvillage"]:
-        sibling = parent / sibling_name
-        if sibling.exists() and sibling.is_dir() and sibling != source_dir:
-            sibling_dirs = [d for d in sibling.iterdir() if d.is_dir()]
-            if sibling_dirs and any(d.name not in {"train", "test"} for d in sibling_dirs):
-                print(f"Found sibling folder: {sibling}")
-                source_dirs.append(sibling)
-
-    # Remove duplicates and the root if we found nested folders
-    if len(source_dirs) > 1:
-        # Prefer the nested/sibling folders over the root
-        source_dirs = list(set(source_dirs) - {source_dir})
-        print(f"Using {len(source_dirs)} source folder(s)")
-    else:
-        source_dirs = [source_dir]
+    print(f"Found {len(all_class_folders)} class folders")
 
     safe_rmtree(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -64,20 +76,13 @@ def process_plantvillage(source_dir: Path, output_dir: Path) -> list[dict[str, s
     stats = defaultdict(int)
     label_counters = defaultdict(int)
 
-    # Collect all class folders from all source directories
-    all_class_folders = []
-    for src_dir in source_dirs:
-        folders = list(_iter_class_folders(src_dir))
-        print(f"  Found {len(folders)} class folders in {src_dir.name}")
-        all_class_folders.extend(folders)
-
     # Group by normalized label to merge same classes from different sources
     class_folders_by_label = defaultdict(list)
     for folder in all_class_folders:
         label, _, _ = normalize_label(folder.name)
         class_folders_by_label[label].append(folder)
 
-    print(f"\nTotal: {len(class_folders_by_label)} unique classes from {len(all_class_folders)} folders")
+    print(f"Grouped into {len(class_folders_by_label)} unique classes")
     print("-" * 60)
 
     for label in sorted(class_folders_by_label.keys()):

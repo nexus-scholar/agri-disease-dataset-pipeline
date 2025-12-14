@@ -5,7 +5,7 @@ import csv
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Optional
 
 from .dataset_metadata import is_valid_image
 from .fs_utils import copy_file, safe_rmtree
@@ -13,6 +13,31 @@ from .label_utils import normalize_label
 
 
 SPLITS = ["train", "test"]
+
+
+def _find_split_folder(root: Path, split_name: str, max_depth: int = 3) -> Optional[Path]:
+    """Recursively find a train or test folder."""
+    if not root.is_dir():
+        return None
+
+    # Check if this folder is the split folder
+    if root.name.lower() == split_name.lower():
+        return root
+
+    # Check direct children first
+    for child in root.iterdir():
+        if child.is_dir() and child.name.lower() == split_name.lower():
+            return child
+
+    # Recurse into subfolders
+    if max_depth > 0:
+        for child in root.iterdir():
+            if child.is_dir() and not child.name.startswith('.'):
+                result = _find_split_folder(child, split_name, max_depth - 1)
+                if result:
+                    return result
+
+    return None
 
 
 def process_plantdoc(source_dir: Path, output_dir: Path) -> list[dict[str, str]]:
@@ -40,11 +65,12 @@ def process_plantdoc(source_dir: Path, output_dir: Path) -> list[dict[str, str]]
     label_counters = defaultdict(int)
 
     for split in SPLITS:
-        split_dir = source_dir / split
-        if not split_dir.exists():
+        # Search recursively for the split folder
+        split_dir = _find_split_folder(source_dir, split)
+        if not split_dir:
             print(f"  WARNING: {split} folder not found")
             continue
-        print(f"\n  Processing {split.upper()}:")
+        print(f"\n  Processing {split.upper()} (found at {split_dir.relative_to(source_dir)}):")
         print("  " + "-" * 50)
         class_folders = sorted(_iter_class_folders(split_dir))
         for class_folder in class_folders:
