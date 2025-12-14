@@ -49,7 +49,7 @@ def evaluate(model: nn.Module, loader: DataLoader, device: torch.device) -> floa
     total = 0
     with torch.no_grad():
         for images, labels in loader:
-            images, labels = images.to(device), labels.to(device)
+            images, labels = images.to(device, non_blocking=True), labels.to(device, non_blocking=True)
             outputs = model(images)
             _, predicted = outputs.max(1)
             total += labels.size(0)
@@ -278,7 +278,7 @@ def run_baseline(args, device):
         model.train()
         epoch_loss = 0.0
         for batch_idx, (images, labels) in enumerate(train_loader):
-            images, labels = images.to(device), labels.to(device)
+            images, labels = images.to(device, non_blocking=True), labels.to(device, non_blocking=True)
             optimizer.zero_grad()
             outputs = model(images)
             loss = criterion(outputs, labels)
@@ -485,6 +485,10 @@ def main():
     t0 = time.time()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     cuda_time = time.time() - t0
+
+    # Enable cudnn benchmark for faster convolutions (input size is fixed at 224x224)
+    if torch.cuda.is_available():
+        torch.backends.cudnn.benchmark = True
 
     print(f"Using device: {device} (init: {cuda_time:.1f}s, total startup: {time.time() - t_start:.1f}s)", flush=True)
 
