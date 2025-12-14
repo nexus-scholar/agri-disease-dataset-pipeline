@@ -16,20 +16,22 @@ The key challenge is that class names don't always match between datasets, and s
 
 ### Summary Table
 
-| Crop | Source Classes | Target Classes | Canonical Classes | Domain Type |
-|------|----------------|----------------|-------------------|-------------|
-| **Tomato** | 10 | 9 | 9 | Standard DA |
-| **Potato** | 3 | 2 | 3 | **Partial DA** |
-| **Pepper** | 2 | 2 | 2 | Full Alignment |
+| Crop | Source Classes | Target Classes | Canonical Classes | Domain Type | Target Samples |
+|------|----------------|----------------|-------------------|-------------|----------------|
+| **Tomato** | 10 | 9 | 9 | **Partial DA** | 746 ✅ Best for AL |
+| **Potato** | 3 | 2 | 3 | Partial DA | 222 (small) |
+| **Pepper** | 2 | 2 | 2 | Full Alignment | 132 (small) |
+
+**Note:** Tomato is the recommended crop for Active Learning experiments due to having the most target samples (746) and a clear PDA scenario (source has `tomato_target_spot` which is missing in target).
 
 ### Sample Counts
 
 | Crop | Source Total | Source Mapped | Target Total | Target Mapped |
 |------|--------------|---------------|--------------|---------------|
-| **Tomato** | 32,022 | 29,214 | 1,491 | 1,491 |
-| **Potato** | 4,304 | 4,304 | 442 | 442 |
-| **Pepper** | 4,949 | 4,949 | 264 | 264 |
-| **Combined** | 41,275 | 38,467 | 2,197 | 2,197 |
+| **Tomato** | 32,022 | 29,214 | 746 | 746 |
+| **Potato** | 4,304 | 4,304 | 222 | 222 |
+| **Pepper** | 4,950 | 4,950 | 132 | 132 |
+| **Combined** | 41,276 | 38,468 | 1,100 | 1,100 |
 
 ---
 

@@ -235,14 +235,28 @@ def get_phase4_experiments() -> List[ExperimentRun]:
     Phase 4: The Main Contribution - FixMatch & PDA (3 experiments)
 
     Scientific Goal: Prove that adding FixMatch (SSL) to the Active Learning loop
-    eliminates Negative Transfer, specifically in the Potato (PDA) case.
-    Key Result: Should show 0 predictions for "Healthy" class.
+    eliminates Negative Transfer in PDA scenarios.
+
+    Tomato is the PRIMARY testbed because:
+    - 746 target samples (enough for meaningful AL)
+    - 9 canonical classes (complex task)
+    - PDA: source has 'target_spot' (2,808 samples) missing in target
+
+    Potato/Pepper are secondary validation with smaller target pools.
     """
     experiments = []
-    crops = ["potato", "tomato", "pepper"]
+    # Order by importance: Tomato first (primary), then Potato, then Pepper
+    crops = ["tomato", "potato", "pepper"]
 
     for idx, crop in enumerate(crops, 1):
         exp_name = f"P4_{idx:02d}_fixmatch_{crop}"
+
+        # Adjust budget based on target pool size
+        # Tomato: 746 samples -> budget 10 per round is fine
+        # Potato: 222 samples -> budget 10 per round
+        # Pepper: 132 samples -> budget 8 per round (smaller pool)
+        budget = 8 if crop == "pepper" else 10
+
         experiments.append(ExperimentRun(
             id=f"P4-{idx:02d}",
             name=f"FixMatch ({crop.title()})",
@@ -255,14 +269,14 @@ def get_phase4_experiments() -> List[ExperimentRun]:
                 "--strategy", "hybrid",
                 "--use-fixmatch",  # The key flag
                 "--baseline-path", f"data/models/baselines/{crop}_mobilenetv3_base.pth",
-                "--budget", "10",
+                "--budget", str(budget),
                 "--rounds", "5",
                 "--epochs", "15",
                 "--lr", "0.001",
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
-            description=f"Main Method: Hybrid + FixMatch on {crop}",
+            description=f"{'PRIMARY: ' if crop == 'tomato' else ''}Hybrid + FixMatch on {crop} (PDA)",
             expected_time_minutes=35,
             priority=1,
         ))
@@ -275,19 +289,22 @@ def get_phase5_experiments() -> List[ExperimentRun]:
     Phase 5: Architecture Benchmark - Efficiency vs Robustness (4 experiments)
 
     Scientific Goal: Apply winning method (Hybrid + FixMatch) to EfficientNet and MobileViT.
-    Expected: EfficientNet fails (Negative Transfer), MobileViT succeeds but slow.
+    Focus on TOMATO as primary testbed (largest target pool for reliable AL).
+    Expected: EfficientNet may suffer from Negative Transfer, MobileViT succeeds but slow.
     """
     experiments = []
 
+    # Focus on Tomato as primary benchmark crop (746 target samples)
     configs = [
-        ("efficientnet", "potato", 0.001),
-        ("mobilevit", "potato", 0.0005),  # Lower LR for ViT
         ("efficientnet", "tomato", 0.001),
-        ("mobilevit", "tomato", 0.0005),
+        ("mobilevit", "tomato", 0.0005),  # Lower LR for ViT
+        ("efficientnet", "potato", 0.001),  # Secondary validation
+        ("mobilevit", "potato", 0.0005),    # Secondary validation
     ]
 
     for idx, (model, crop, lr) in enumerate(configs, 1):
         exp_name = f"P5_{idx:02d}_{model}_{crop}_fixmatch"
+        budget = 10 if crop == "tomato" else 8  # Smaller budget for smaller pools
         experiments.append(ExperimentRun(
             id=f"P5-{idx:02d}",
             name=f"Benchmark {model} ({crop.title()})",
@@ -300,14 +317,14 @@ def get_phase5_experiments() -> List[ExperimentRun]:
                 "--strategy", "hybrid",
                 "--use-fixmatch",
                 "--baseline-path", f"data/models/baselines/{crop}_{model}_base.pth",
-                "--budget", "10",
+                "--budget", str(budget),
                 "--rounds", "5",
                 "--epochs", "15",
                 "--lr", str(lr),
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
-            description=f"SOTA Comparison: {model} on {crop} with FixMatch",
+            description=f"{'PRIMARY: ' if crop == 'tomato' else ''}SOTA {model} on {crop} + FixMatch",
             expected_time_minutes=40,
             priority=1,
         ))
