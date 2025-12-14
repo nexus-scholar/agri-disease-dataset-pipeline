@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -329,6 +330,30 @@ def get_all_experiments() -> List[ExperimentRun]:
 # EXPERIMENT RUNNER
 # =============================================================================
 
+def create_progress_bar(current: int, total: int, width: int = 30) -> str:
+    """Create a text-based progress bar."""
+    if total == 0:
+        return "[" + "=" * width + "]"
+    filled = int(width * current / total)
+    bar = "=" * filled + "-" * (width - filled)
+    percent = 100 * current / total
+    return f"[{bar}] {percent:.0f}%"
+
+
+def format_duration(seconds: float) -> str:
+    """Format duration in human-readable format."""
+    if seconds < 60:
+        return f"{seconds:.0f}s"
+    elif seconds < 3600:
+        mins = int(seconds // 60)
+        secs = int(seconds % 60)
+        return f"{mins}m {secs}s"
+    else:
+        hours = int(seconds // 3600)
+        mins = int((seconds % 3600) // 60)
+        return f"{hours}h {mins}m"
+
+
 class ExperimentRunner:
     """Manages experiment execution and logging."""
     
@@ -337,9 +362,14 @@ class ExperimentRunner:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.results: List[ExperimentResult] = []
         self.run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
+        self._current_epoch = 0
+        self._total_epochs = 0
+        self._current_round = 0
+        self._total_rounds = 0
+        self._start_time = None
+
     def run_experiment(self, exp: ExperimentRun, dry_run: bool = False) -> ExperimentResult:
-        """Run a single experiment."""
+        """Run a single experiment with real-time progress display."""
         print(f"\n{'='*60}")
         print(f"[{exp.id}] {exp.name}")
         print(f"{'='*60}")
@@ -363,22 +393,72 @@ class ExperimentRunner:
         
         try:
             print(f"\nStarting at {start_time.strftime('%H:%M:%S')}...")
-            
-            result = subprocess.run(
+            print("-" * 60)
+
+            # Set start time for progress tracking
+            self._start_time = start_time
+
+            # Use Popen for real-time output streaming
+            process = subprocess.Popen(
                 exp.command,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 text=True,
-                timeout=exp.expected_time_minutes * 60 * 2,  # 2x timeout
+                bufsize=1,  # Line buffered
+                universal_newlines=True,
             )
-            
+
+            output_lines = []
+            current_epoch = 0
+            current_round = 0
+
+            # Stream output in real-time
+            for line in iter(process.stdout.readline, ''):
+                if not line:
+                    break
+
+                line = line.rstrip()
+                output_lines.append(line)
+
+                # Parse and display progress information
+                line_lower = line.lower()
+
+                # Detect epoch progress
+                if 'epoch' in line_lower:
+                    self._print_progress(line, 'EPOCH')
+                # Detect AL round progress
+                elif 'round' in line_lower:
+                    self._print_progress(line, 'ROUND')
+                # Detect accuracy updates
+                elif 'acc' in line_lower or 'accuracy' in line_lower:
+                    self._print_progress(line, 'METRIC')
+                # Detect loss updates
+                elif 'loss' in line_lower:
+                    self._print_progress(line, 'LOSS')
+                # Detect data loading info
+                elif '[data]' in line_lower:
+                    self._print_progress(line, 'DATA')
+                # Detect model info
+                elif '[model]' in line_lower:
+                    self._print_progress(line, 'MODEL')
+                # Show any warnings or errors
+                elif 'warning' in line_lower or 'error' in line_lower:
+                    self._print_progress(line, 'WARN')
+                # Show phase/stage markers
+                elif '===' in line or '---' in line:
+                    print(line)
+
+            process.wait()
+
             end_time = datetime.now()
             duration = (end_time - start_time).total_seconds()
             
-            success = result.returncode == 0
-            
+            success = process.returncode == 0
+            full_output = '\n'.join(output_lines)
+
             # Parse metrics from output
-            metrics = self._parse_metrics(result.stdout)
-            
+            metrics = self._parse_metrics(full_output)
+
             exp_result = ExperimentResult(
                 id=exp.id,
                 name=exp.name,
@@ -386,23 +466,26 @@ class ExperimentRunner:
                 start_time=start_time.isoformat(),
                 end_time=end_time.isoformat(),
                 duration_seconds=duration,
-                output=result.stdout,
-                error=result.stderr if not success else "",
+                output=full_output,
+                error="" if success else "Process failed",
                 metrics=metrics,
             )
             
-            status = "✓ SUCCESS" if success else "✗ FAILED"
-            print(f"\n{status} in {duration:.1f}s")
-            
+            print("-" * 60)
+            status = "[OK] SUCCESS" if success else "[FAIL] FAILED"
+            print(f"{status} in {duration:.1f}s ({duration/60:.1f} min)")
+
             if metrics:
-                print("Metrics:")
+                print("Final Metrics:")
                 for k, v in metrics.items():
                     print(f"  {k}: {v}")
             
             return exp_result
             
         except subprocess.TimeoutExpired:
+            process.kill()
             end_time = datetime.now()
+            print("[FAIL] TIMEOUT")
             return ExperimentResult(
                 id=exp.id,
                 name=exp.name,
@@ -414,6 +497,7 @@ class ExperimentRunner:
             )
         except Exception as e:
             end_time = datetime.now()
+            print(f"[FAIL] ERROR: {e}")
             return ExperimentResult(
                 id=exp.id,
                 name=exp.name,
@@ -424,6 +508,78 @@ class ExperimentRunner:
                 error=str(e),
             )
     
+    def _print_progress(self, line: str, prefix: str, start_time: datetime = None):
+        """Print a progress line with formatting and elapsed time."""
+        import re
+
+        # Color codes for terminal (works in Colab too)
+        colors = {
+            'EPOCH': '\033[94m',  # Blue
+            'ROUND': '\033[95m',  # Magenta
+            'METRIC': '\033[92m', # Green
+            'LOSS': '\033[93m',   # Yellow
+            'DATA': '\033[96m',   # Cyan
+            'MODEL': '\033[96m',  # Cyan
+            'WARN': '\033[91m',   # Red
+        }
+        reset = '\033[0m'
+        bold = '\033[1m'
+
+        color = colors.get(prefix, '')
+
+        # Calculate elapsed time if available
+        elapsed_str = ""
+        if self._start_time:
+            elapsed = (datetime.now() - self._start_time).total_seconds()
+            elapsed_str = f" [{format_duration(elapsed)}]"
+
+        # Format the line based on type
+        if prefix == 'EPOCH':
+            # Extract epoch info and show progress bar if possible
+            match = re.search(r'epoch\s*(\d+)(?:/(\d+))?', line.lower())
+            if match:
+                current = int(match.group(1))
+                total = int(match.group(2)) if match.group(2) else 0
+                if total > 0:
+                    bar = create_progress_bar(current, total, width=20)
+                    print(f"{color}{bold}[{prefix}]{reset}{elapsed_str} Epoch {current}/{total} {bar}")
+                else:
+                    print(f"{color}{bold}[{prefix}]{reset}{elapsed_str} {line}")
+            else:
+                print(f"{color}[{prefix}]{reset}{elapsed_str} {line}")
+        elif prefix == 'ROUND':
+            # Extract round info for AL
+            match = re.search(r'round\s*(\d+)(?:/(\d+))?', line.lower())
+            if match:
+                current = int(match.group(1))
+                total = int(match.group(2)) if match.group(2) else 5
+                bar = create_progress_bar(current, total, width=15)
+                print(f"{color}{bold}[{prefix}]{reset}{elapsed_str} Round {current}/{total} {bar}")
+            else:
+                print(f"{color}{bold}[{prefix}]{reset}{elapsed_str} {line}")
+        elif prefix == 'METRIC':
+            # Highlight accuracy values
+            match = re.search(r'(\d+\.?\d*)\s*%', line)
+            if match:
+                acc = float(match.group(1))
+                # Color based on accuracy level
+                if acc >= 80:
+                    acc_color = '\033[92m'  # Green
+                elif acc >= 50:
+                    acc_color = '\033[93m'  # Yellow
+                else:
+                    acc_color = '\033[91m'  # Red
+                print(f"{color}[{prefix}]{reset}{elapsed_str} {line.replace(match.group(0), f'{acc_color}{bold}{match.group(0)}{reset}')}")
+            else:
+                print(f"{color}[{prefix}]{reset}{elapsed_str} {line}")
+        elif prefix == 'LOSS':
+            # Only show loss lines (they're important)
+            print(f"{color}[{prefix}]{reset}{elapsed_str} {line}")
+        elif prefix == 'WARN':
+            print(f"{color}{bold}[{prefix}]{reset} {line}")
+        else:
+            print(f"{color}[{prefix}]{reset}{elapsed_str} {line}")
+
     def _parse_metrics(self, output: str) -> Dict[str, Any]:
         """Extract metrics from experiment output."""
         metrics = {}
