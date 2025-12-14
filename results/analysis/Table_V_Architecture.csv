@@ -1,8 +1,0 @@
-crop,model,field_acc
-pepper,mobilenetv3,62.96296296296296
-potato,mobilevit,64.44444444444444
-potato,efficientnet,62.22222222222222
-potato,mobilenetv3,53.333333333333336
-tomato,efficientnet,35.82089552238806
-tomato,mobilevit,33.582089552238806
-tomato,mobilenetv3,32.08955223880597
