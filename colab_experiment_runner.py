@@ -398,6 +398,10 @@ class ExperimentRunner:
             # Set start time for progress tracking
             self._start_time = start_time
 
+            # Set up environment for unbuffered output
+            env = os.environ.copy()
+            env['PYTHONUNBUFFERED'] = '1'
+
             # Use Popen for real-time output streaming
             process = subprocess.Popen(
                 exp.command,
@@ -406,6 +410,7 @@ class ExperimentRunner:
                 text=True,
                 bufsize=1,  # Line buffered
                 universal_newlines=True,
+                env=env,  # Use unbuffered environment
             )
 
             output_lines = []

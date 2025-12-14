@@ -226,9 +226,9 @@ def run_baseline(args, device):
     import time
 
     strong_tag = " | StrongAug" if getattr(args, 'strong_aug', False) else ""
-    print(f"\n{'='*60}")
-    print(f"BASELINE TRAINING | Crop: {args.crop} | Model: {args.model}{strong_tag}")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}", flush=True)
+    print(f"BASELINE TRAINING | Crop: {args.crop} | Model: {args.model}{strong_tag}", flush=True)
+    print(f"{'='*60}", flush=True)
 
     # Initialize recorder
     t0 = time.time()
@@ -236,7 +236,7 @@ def run_baseline(args, device):
     exp_name = args.exp_name or f"baseline_{args.crop}_{args.model}{strong_suffix}"
     recorder = ExperimentRecorder(exp_name)
     recorder.save_config(args)
-    print(f"  [Setup] Recorder init: {time.time() - t0:.1f}s")
+    print(f"  [Setup] Recorder init: {time.time() - t0:.1f}s", flush=True)
 
     # Load data
     t0 = time.time()
@@ -247,12 +247,12 @@ def run_baseline(args, device):
         split_file=args.split_file,
         use_strong_aug=getattr(args, 'strong_aug', False),
     )
-    print(f"  [Setup] Data loading: {time.time() - t0:.1f}s")
+    print(f"  [Setup] Data loading: {time.time() - t0:.1f}s", flush=True)
 
     # Save data splits for reproducibility (fast mode - indices only)
     t0 = time.time()
     recorder.save_splits(data, save_full_paths=False)
-    print(f"  [Setup] Splits saved: {time.time() - t0:.1f}s")
+    print(f"  [Setup] Splits saved: {time.time() - t0:.1f}s", flush=True)
 
     train_loader = data['train_loader']
     val_loader = data['val_loader']
@@ -268,7 +268,7 @@ def run_baseline(args, device):
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
 
-    print(f"\n  Training for {args.epochs} epochs...")
+    print(f"\n  Training for {args.epochs} epochs...", flush=True)
     best_val_acc = 0.0
 
     for epoch in range(args.epochs):
@@ -288,7 +288,7 @@ def run_baseline(args, device):
 
         # Log epoch metrics
         recorder.log_epoch(epoch + 1, avg_loss, val_acc)
-        print(f"    Epoch {epoch+1}/{args.epochs} | Loss: {avg_loss:.4f} | Val Acc: {val_acc:.2f}%")
+        print(f"    Epoch {epoch+1}/{args.epochs} | Loss: {avg_loss:.4f} | Val Acc: {val_acc:.2f}%", flush=True)
 
         # Save best model
         if val_acc > best_val_acc:
@@ -299,7 +299,7 @@ def run_baseline(args, device):
     field_acc, cm, report = get_detailed_metrics(model, test_loader, device, classes)
     recorder.save_final_evaluation(field_acc, cm, report)
 
-    print(f"\n  FIELD ACCURACY: {field_acc:.2f}%")
+    print(f"\n  FIELD ACCURACY: {field_acc:.2f}%", flush=True)
 
     # Save final model to both recorder dir and specified baseline path
     torch.save(model.state_dict(), recorder.get_model_path("model_final.pth"))
@@ -325,10 +325,10 @@ def run_active_learning(args, device):
     """Run active learning with optional FixMatch."""
     import time
 
-    print(f"\n{'='*60}")
-    print(f"ACTIVE LEARNING | Crop: {args.crop} | Strategy: {args.strategy}")
-    print(f"Model: {args.model} | FixMatch: {args.use_fixmatch}")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}", flush=True)
+    print(f"ACTIVE LEARNING | Crop: {args.crop} | Strategy: {args.strategy}", flush=True)
+    print(f"Model: {args.model} | FixMatch: {args.use_fixmatch}", flush=True)
+    print(f"{'='*60}", flush=True)
 
     # Initialize recorder
     t0 = time.time()
@@ -336,7 +336,7 @@ def run_active_learning(args, device):
     exp_name = args.exp_name or f"active_{args.crop}_{args.model}_{args.strategy}{fixmatch_tag}"
     recorder = ExperimentRecorder(exp_name)
     recorder.save_config(args)
-    print(f"  [Setup] Recorder init: {time.time() - t0:.1f}s")
+    print(f"  [Setup] Recorder init: {time.time() - t0:.1f}s", flush=True)
 
     # Load data
     t0 = time.time()
@@ -346,12 +346,12 @@ def run_active_learning(args, device):
         seed=args.seed,
         split_file=args.split_file,
     )
-    print(f"  [Setup] Data loading: {time.time() - t0:.1f}s")
+    print(f"  [Setup] Data loading: {time.time() - t0:.1f}s", flush=True)
 
     # Save data splits for reproducibility (fast mode - indices only)
     t0 = time.time()
     recorder.save_splits(data, save_full_paths=False)
-    print(f"  [Setup] Splits saved: {time.time() - t0:.1f}s")
+    print(f"  [Setup] Splits saved: {time.time() - t0:.1f}s", flush=True)
 
     test_loader = data['test_loader']
     pool_subset = data['pool_subset']
@@ -369,8 +369,8 @@ def run_active_learning(args, device):
         )
 
     model = load_model(baseline_path, args.model, num_classes, device)
-    print(f"  [Setup] Model loaded: {time.time() - t0:.1f}s")
-    print(f"  [Model] Loaded {args.model} from {baseline_path}")
+    print(f"  [Setup] Model loaded: {time.time() - t0:.1f}s", flush=True)
+    print(f"  [Model] Loaded {args.model} from {baseline_path}", flush=True)
 
     # Initialize pool indices
     pool_indices = list(pool_subset.indices)
@@ -379,7 +379,7 @@ def run_active_learning(args, device):
     # Initial accuracy (0 labels) - Round 0
     acc, _, _ = get_detailed_metrics(model, test_loader, device, classes)
     recorder.log_al_round(0, 0, acc)
-    print(f"\n  Round 0 (0 labels): {acc:.2f}%")
+    print(f"\n  Round 0/{ args.rounds} (0 labels): {acc:.2f}%", flush=True)
 
     results = [acc]
 
@@ -432,7 +432,7 @@ def run_active_learning(args, device):
             "new_indices": new_indices,
             "pool_remaining": len(pool_indices),
         })
-        print(f"  Round {round_idx+1} ({len(labeled_indices)} labels): {acc:.2f}%")
+        print(f"  Round {round_idx+1}/{args.rounds} ({len(labeled_indices)} labels): {acc:.2f}%", flush=True)
         results.append(acc)
 
     # Final detailed evaluation

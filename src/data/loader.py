@@ -311,7 +311,7 @@ def load_data_modules(
         target_mapping = {}
 
     if verbose:
-        print(f"  [Data] Config resolved: {time.time() - t_start:.1f}s")
+        print(f"  [Data] Config resolved: {time.time() - t_start:.1f}s", flush=True)
 
     # Create datasets with canonical class alignment
     t0 = time.time()
@@ -322,7 +322,7 @@ def load_data_modules(
         class_mapping=source_mapping,
     )
     if verbose:
-        print(f"  [Data] Source train loaded: {time.time() - t0:.1f}s ({len(source_train)} samples)")
+        print(f"  [Data] Source train loaded: {time.time() - t0:.1f}s ({len(source_train)} samples)", flush=True)
 
     t0 = time.time()
     source_val = CanonicalImageFolder(
@@ -332,7 +332,7 @@ def load_data_modules(
         class_mapping=source_mapping,
     )
     if verbose:
-        print(f"  [Data] Source val loaded: {time.time() - t0:.1f}s")
+        print(f"  [Data] Source val loaded: {time.time() - t0:.1f}s", flush=True)
 
     t0 = time.time()
     target_dataset = CanonicalImageFolder(
@@ -342,13 +342,13 @@ def load_data_modules(
         class_mapping=target_mapping,
     )
     if verbose:
-        print(f"  [Data] Target loaded: {time.time() - t0:.1f}s ({len(target_dataset)} samples)")
+        print(f"  [Data] Target loaded: {time.time() - t0:.1f}s ({len(target_dataset)} samples)", flush=True)
 
     num_classes = len(canonical_classes)
 
     if verbose:
-        print(f"  [Data] Canonical classes ({num_classes}): {canonical_classes}")
-        print(f"  [Data] Source samples: {len(source_train)}, Target samples: {len(target_dataset)}")
+        print(f"  [Data] Canonical classes ({num_classes}): {canonical_classes}", flush=True)
+        print(f"  [Data] Source samples: {len(source_train)}, Target samples: {len(target_dataset)}", flush=True)
 
     # Split source into train/val
     generator = torch.Generator().manual_seed(seed)
@@ -398,7 +398,7 @@ def load_data_modules(
         num_workers=num_workers,
     )
 
-    print(f"  [Data] Train: {len(train_subset)}, Val: {len(val_subset)}, Pool: {len(pool_subset)}, Test: {len(test_subset)}")
+    print(f"  [Data] Train: {len(train_subset)}, Val: {len(val_subset)}, Pool: {len(pool_subset)}, Test: {len(test_subset)}", flush=True)
 
     # Get crop config if available
     crop_config = None
