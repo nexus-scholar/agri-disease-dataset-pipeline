@@ -123,24 +123,48 @@ class ExperimentRecorder:
         print(f"  [Recorder] Config saved: {config_path}")
         return config_path
 
-    def save_splits(self, data_modules: Dict[str, Any]) -> Path:
+    def save_splits(self, data_modules: Dict[str, Any], save_full_paths: bool = False) -> Path:
         """
-        Save exact file paths for each data split.
-
-        This is crucial for reproducibility - we record exactly which
-        files were used in train/val/pool/test.
+        Save data split information for reproducibility.
 
         Args:
             data_modules: Dictionary from load_data_modules() containing
                          train_loader, val_loader, pool_subset, test_subset, etc.
+            save_full_paths: If True, save all file paths (slow for large datasets).
+                            If False (default), save only indices and summary stats.
 
         Returns:
             Path to saved splits file.
         """
         print("  [Recorder] Snapshotting data splits...")
 
+        def get_indices_only(dataset_or_loader) -> Dict[str, Any]:
+            """Extract just indices and counts (fast)."""
+            # Unwrap DataLoader
+            if isinstance(dataset_or_loader, DataLoader):
+                ds = dataset_or_loader.dataset
+            else:
+                ds = dataset_or_loader
+
+            # Handle Subsets
+            if isinstance(ds, Subset):
+                indices = list(ds.indices)
+                total = len(ds.dataset.samples) if hasattr(ds.dataset, 'samples') else len(ds.dataset)
+                return {
+                    "count": len(indices),
+                    "indices": indices,
+                    "total_in_source": total,
+                }
+            elif hasattr(ds, 'samples'):
+                return {
+                    "count": len(ds.samples),
+                    "indices": list(range(len(ds.samples))),
+                }
+            else:
+                return {"count": len(ds), "indices": []}
+
         def get_paths(dataset_or_loader) -> List[Dict[str, Any]]:
-            """Extract file paths from a Dataset or DataLoader."""
+            """Extract file paths from a Dataset or DataLoader (slow for large datasets)."""
             # Unwrap DataLoader
             if isinstance(dataset_or_loader, DataLoader):
                 ds = dataset_or_loader.dataset
@@ -174,23 +198,45 @@ class ExperimentRecorder:
 
         splits = {}
 
-        # Standard splits
-        if 'train_loader' in data_modules:
-            splits['train'] = get_paths(data_modules['train_loader'])
-        if 'val_loader' in data_modules:
-            splits['val'] = get_paths(data_modules['val_loader'])
-        if 'pool_subset' in data_modules:
-            splits['pool'] = get_paths(data_modules['pool_subset'])
-        if 'test_subset' in data_modules:
-            splits['test'] = get_paths(data_modules['test_subset'])
+        if save_full_paths:
+            # Full paths (slow but complete reproducibility)
+            print("  [Recorder] Saving full file paths (this may take a moment)...")
+            if 'train_loader' in data_modules:
+                splits['train'] = get_paths(data_modules['train_loader'])
+            if 'val_loader' in data_modules:
+                splits['val'] = get_paths(data_modules['val_loader'])
+            if 'pool_subset' in data_modules:
+                splits['pool'] = get_paths(data_modules['pool_subset'])
+            if 'test_subset' in data_modules:
+                splits['test'] = get_paths(data_modules['test_subset'])
+        else:
+            # Fast: indices only
+            if 'train_loader' in data_modules:
+                splits['train'] = get_indices_only(data_modules['train_loader'])
+            if 'val_loader' in data_modules:
+                splits['val'] = get_indices_only(data_modules['val_loader'])
+            if 'pool_subset' in data_modules:
+                splits['pool'] = get_indices_only(data_modules['pool_subset'])
+            if 'test_subset' in data_modules:
+                splits['test'] = get_indices_only(data_modules['test_subset'])
 
         # Add summary stats
-        splits['_summary'] = {
-            'train_count': len(splits.get('train', [])),
-            'val_count': len(splits.get('val', [])),
-            'pool_count': len(splits.get('pool', [])),
-            'test_count': len(splits.get('test', [])),
-        }
+        if save_full_paths:
+            splits['_summary'] = {
+                'train_count': len(splits.get('train', [])),
+                'val_count': len(splits.get('val', [])),
+                'pool_count': len(splits.get('pool', [])),
+                'test_count': len(splits.get('test', [])),
+                'full_paths_saved': True,
+            }
+        else:
+            splits['_summary'] = {
+                'train_count': splits.get('train', {}).get('count', 0),
+                'val_count': splits.get('val', {}).get('count', 0),
+                'pool_count': splits.get('pool', {}).get('count', 0),
+                'test_count': splits.get('test', {}).get('count', 0),
+                'full_paths_saved': False,
+            }
 
         # Store in metrics too
         self.metrics['data_stats'] = splits['_summary']

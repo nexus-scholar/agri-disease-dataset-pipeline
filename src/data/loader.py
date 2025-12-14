@@ -250,6 +250,7 @@ def load_data_modules(
 
     This is the main entry point for experiment scripts.
 
+
     Args:
         crop_filter: Crop name to filter classes (e.g., 'tomato', 'potato').
                      Can be comma-separated for multiple crops.
@@ -280,6 +281,9 @@ def load_data_modules(
     source_dir = Path(source_dir or PLANTVILLAGE_DIR)
     target_dir = Path(target_dir or PLANTDOC_DIR)
 
+    import time
+    t_start = time.time()
+
     # Get transforms (with optional strong augmentation)
     train_transform = get_train_transforms(strong=use_strong_aug)
     val_transform = get_val_transforms()
@@ -306,25 +310,39 @@ def load_data_modules(
         source_mapping = {}
         target_mapping = {}
 
+    if verbose:
+        print(f"  [Data] Config resolved: {time.time() - t_start:.1f}s")
+
     # Create datasets with canonical class alignment
+    t0 = time.time()
     source_train = CanonicalImageFolder(
         source_dir,
         canonical_classes,
         transform=train_transform,
         class_mapping=source_mapping,
     )
+    if verbose:
+        print(f"  [Data] Source train loaded: {time.time() - t0:.1f}s ({len(source_train)} samples)")
+
+    t0 = time.time()
     source_val = CanonicalImageFolder(
         source_dir,
         canonical_classes,
         transform=val_transform,
         class_mapping=source_mapping,
     )
+    if verbose:
+        print(f"  [Data] Source val loaded: {time.time() - t0:.1f}s")
+
+    t0 = time.time()
     target_dataset = CanonicalImageFolder(
         target_dir,
         canonical_classes,
         transform=val_transform,
         class_mapping=target_mapping,
     )
+    if verbose:
+        print(f"  [Data] Target loaded: {time.time() - t0:.1f}s ({len(target_dataset)} samples)")
 
     num_classes = len(canonical_classes)
 

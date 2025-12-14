@@ -223,18 +223,23 @@ def parse_args():
 
 def run_baseline(args, device):
     """Run baseline training on source (PlantVillage) data."""
+    import time
+
     strong_tag = " | StrongAug" if getattr(args, 'strong_aug', False) else ""
     print(f"\n{'='*60}")
     print(f"BASELINE TRAINING | Crop: {args.crop} | Model: {args.model}{strong_tag}")
     print(f"{'='*60}")
 
     # Initialize recorder
+    t0 = time.time()
     strong_suffix = "_strong" if getattr(args, 'strong_aug', False) else ""
     exp_name = args.exp_name or f"baseline_{args.crop}_{args.model}{strong_suffix}"
     recorder = ExperimentRecorder(exp_name)
     recorder.save_config(args)
+    print(f"  [Setup] Recorder init: {time.time() - t0:.1f}s")
 
     # Load data
+    t0 = time.time()
     data = load_data_modules(
         crop_filter=args.crop,
         batch_size=args.batch_size,
@@ -242,9 +247,12 @@ def run_baseline(args, device):
         split_file=args.split_file,
         use_strong_aug=getattr(args, 'strong_aug', False),
     )
+    print(f"  [Setup] Data loading: {time.time() - t0:.1f}s")
 
-    # Save data splits for reproducibility
-    recorder.save_splits(data)
+    # Save data splits for reproducibility (fast mode - indices only)
+    t0 = time.time()
+    recorder.save_splits(data, save_full_paths=False)
+    print(f"  [Setup] Splits saved: {time.time() - t0:.1f}s")
 
     train_loader = data['train_loader']
     val_loader = data['val_loader']
@@ -315,27 +323,35 @@ def run_baseline(args, device):
 
 def run_active_learning(args, device):
     """Run active learning with optional FixMatch."""
+    import time
+
     print(f"\n{'='*60}")
     print(f"ACTIVE LEARNING | Crop: {args.crop} | Strategy: {args.strategy}")
     print(f"Model: {args.model} | FixMatch: {args.use_fixmatch}")
     print(f"{'='*60}")
 
     # Initialize recorder
+    t0 = time.time()
     fixmatch_tag = "_fixmatch" if args.use_fixmatch else ""
     exp_name = args.exp_name or f"active_{args.crop}_{args.model}_{args.strategy}{fixmatch_tag}"
     recorder = ExperimentRecorder(exp_name)
     recorder.save_config(args)
+    print(f"  [Setup] Recorder init: {time.time() - t0:.1f}s")
 
     # Load data
+    t0 = time.time()
     data = load_data_modules(
         crop_filter=args.crop,
         batch_size=args.batch_size,
         seed=args.seed,
         split_file=args.split_file,
     )
+    print(f"  [Setup] Data loading: {time.time() - t0:.1f}s")
 
-    # Save data splits for reproducibility
-    recorder.save_splits(data)
+    # Save data splits for reproducibility (fast mode - indices only)
+    t0 = time.time()
+    recorder.save_splits(data, save_full_paths=False)
+    print(f"  [Setup] Splits saved: {time.time() - t0:.1f}s")
 
     test_loader = data['test_loader']
     pool_subset = data['pool_subset']
@@ -344,6 +360,7 @@ def run_active_learning(args, device):
     target_dataset = data['target_dataset']
 
     # Load baseline model
+    t0 = time.time()
     baseline_path = Path(args.baseline_path)
     if not baseline_path.exists():
         raise FileNotFoundError(
@@ -352,6 +369,7 @@ def run_active_learning(args, device):
         )
 
     model = load_model(baseline_path, args.model, num_classes, device)
+    print(f"  [Setup] Model loaded: {time.time() - t0:.1f}s")
     print(f"  [Model] Loaded {args.model} from {baseline_path}")
 
     # Initialize pool indices
