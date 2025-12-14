@@ -81,6 +81,8 @@ def get_phase1_experiments() -> List[ExperimentRun]:
         for model in models:
             idx += 1
             exp_name = f"P1_{idx:02d}_baseline_{crop}_{model}"
+            # Larger batch size for A100 (64 for light models, 32 for ViT)
+            batch_size = 32 if model == "mobilevit" else 64
             experiments.append(ExperimentRun(
                 id=f"P1-{idx:02d}",
                 name=f"Baseline {crop.title()} {model}",
@@ -93,11 +95,12 @@ def get_phase1_experiments() -> List[ExperimentRun]:
                     "--baseline-path", f"data/models/baselines/{crop}_{model}_base.pth",
                     "--epochs", "10",
                     "--lr", "0.001",
+                    "--batch-size", str(batch_size),
                     "--exp-name", exp_name,
                     "--no-confusion",
                 ],
                 description=f"Baseline: {crop} with {model} - measure generalization gap",
-                expected_time_minutes=15 if model == "mobilevit" else 10,
+                expected_time_minutes=10 if model == "mobilevit" else 5,  # Faster with larger batch
                 priority=1,
             ))
     
@@ -154,11 +157,12 @@ def get_phase2_experiments() -> List[ExperimentRun]:
                 "--baseline-path", f"data/models/baselines/{crop}_strong_base.pth",
                 "--epochs", "10",
                 "--lr", "0.001",
+                "--batch-size", "64",
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
             description=f"Passive: Strong Augmentation on {crop} - test if aug closes gap",
-            expected_time_minutes=15,
+            expected_time_minutes=8,  # Faster with larger batch
             priority=1,
         ))
 
@@ -195,11 +199,12 @@ def get_phase3_experiments() -> List[ExperimentRun]:
                 "--rounds", "5",
                 "--epochs", "5",
                 "--lr", "0.0001",
+                "--batch-size", "32",
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
             description=f"Ablation: {strategy} strategy on Tomato",
-            expected_time_minutes=20,
+            expected_time_minutes=15,
             priority=1,
         ))
     
@@ -219,11 +224,12 @@ def get_phase3_experiments() -> List[ExperimentRun]:
             "--rounds", "5",
             "--epochs", "5",
             "--lr", "0.0001",
+            "--batch-size", "32",
             "--exp-name", "P3_04_AL_hybrid_potato",
             "--no-confusion",
         ],
         description="Verify Hybrid strategy works on Potato PDA case",
-        expected_time_minutes=20,
+        expected_time_minutes=15,
         priority=1,
     ))
 
@@ -273,11 +279,12 @@ def get_phase4_experiments() -> List[ExperimentRun]:
                 "--rounds", "5",
                 "--epochs", "15",
                 "--lr", "0.001",
+                "--batch-size", "32",
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
             description=f"{'PRIMARY: ' if crop == 'tomato' else ''}Hybrid + FixMatch on {crop} (PDA)",
-            expected_time_minutes=35,
+            expected_time_minutes=25,  # Faster with larger batch
             priority=1,
         ))
 
@@ -295,14 +302,15 @@ def get_phase5_experiments() -> List[ExperimentRun]:
     experiments = []
 
     # Focus on Tomato as primary benchmark crop (746 target samples)
+    # (model, crop, lr, batch_size)
     configs = [
-        ("efficientnet", "tomato", 0.001),
-        ("mobilevit", "tomato", 0.0005),  # Lower LR for ViT
-        ("efficientnet", "potato", 0.001),  # Secondary validation
-        ("mobilevit", "potato", 0.0005),    # Secondary validation
+        ("efficientnet", "tomato", 0.001, 48),   # EfficientNet can handle larger batches
+        ("mobilevit", "tomato", 0.0005, 24),      # ViT needs smaller batches (memory)
+        ("efficientnet", "potato", 0.001, 48),   # Secondary validation
+        ("mobilevit", "potato", 0.0005, 24),      # Secondary validation
     ]
 
-    for idx, (model, crop, lr) in enumerate(configs, 1):
+    for idx, (model, crop, lr, batch_size) in enumerate(configs, 1):
         exp_name = f"P5_{idx:02d}_{model}_{crop}_fixmatch"
         budget = 10 if crop == "tomato" else 8  # Smaller budget for smaller pools
         experiments.append(ExperimentRun(
@@ -321,11 +329,12 @@ def get_phase5_experiments() -> List[ExperimentRun]:
                 "--rounds", "5",
                 "--epochs", "15",
                 "--lr", str(lr),
+                "--batch-size", str(batch_size),
                 "--exp-name", exp_name,
                 "--no-confusion",
             ],
             description=f"{'PRIMARY: ' if crop == 'tomato' else ''}SOTA {model} on {crop} + FixMatch",
-            expected_time_minutes=40,
+            expected_time_minutes=30 if model == "mobilevit" else 25,
             priority=1,
         ))
 
@@ -714,137 +723,6 @@ class ExperimentRunner:
             if isinstance(acc, float):
                 acc = f"{acc:.2f}%"
             print(f"  {status} [{r.id}] {r.name}: {acc}")
-
-
-# =============================================================================
-# COLAB SETUP
-# =============================================================================
-
-def setup_colab():
-    """Setup for Google Colab environment."""
-    if not IN_COLAB:
-        print("Not running in Colab, skipping Colab setup")
-        return
-    
-    print("Setting up Colab environment...")
-    
-    # Mount Google Drive
-    from google.colab import drive
-    drive.mount('/content/drive')
-    
-    # Check GPU
-    import torch
-    if torch.cuda.is_available():
-        print(f"GPU: {torch.cuda.get_device_name(0)}")
-        print(f"Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
-    else:
-        print("WARNING: No GPU detected!")
-    
-    # Install dependencies if needed
-    # !pip install timm torchvision scikit-learn
-
-
-def generate_colab_notebook():
-    """Generate a Colab-ready notebook."""
-    notebook = {
-        "nbformat": 4,
-        "nbformat_minor": 0,
-        "metadata": {
-            "colab": {"name": "PDA_Experiments.ipynb", "provenance": []},
-            "kernelspec": {"name": "python3", "display_name": "Python 3"},
-            "accelerator": "GPU"
-        },
-        "cells": [
-            {
-                "cell_type": "markdown",
-                "metadata": {},
-                "source": ["# PDA Experiment Suite\n", "Run all experiments for the paper."]
-            },
-            {
-                "cell_type": "code",
-                "metadata": {},
-                "source": [
-                    "# Mount Google Drive\n",
-                    "from google.colab import drive\n",
-                    "drive.mount('/content/drive')\n",
-                    "\n",
-                    "# Clone or copy your repo\n",
-                    "%cd /content\n",
-                    "!git clone https://github.com/YOUR_REPO/dataset-processing.git || echo 'Already cloned'\n",
-                    "%cd dataset-processing\n",
-                ],
-                "execution_count": None,
-                "outputs": []
-            },
-            {
-                "cell_type": "code",
-                "metadata": {},
-                "source": [
-                    "# Install dependencies\n",
-                    "!pip install -q timm torchvision scikit-learn matplotlib\n",
-                ],
-                "execution_count": None,
-                "outputs": []
-            },
-            {
-                "cell_type": "code",
-                "metadata": {},
-                "source": [
-                    "# Check GPU\n",
-                    "import torch\n",
-                    "print(f'GPU: {torch.cuda.get_device_name(0)}')\n",
-                    "print(f'Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB')\n",
-                ],
-                "execution_count": None,
-                "outputs": []
-            },
-            {
-                "cell_type": "code",
-                "metadata": {},
-                "source": [
-                    "# Run Phase 1 (Baselines)\n",
-                    "!python colab_experiment_runner.py --phase 1\n",
-                ],
-                "execution_count": None,
-                "outputs": []
-            },
-            {
-                "cell_type": "code",
-                "metadata": {},
-                "source": [
-                    "# Run Phase 2 (AL Strategies)\n",
-                    "!python colab_experiment_runner.py --phase 2\n",
-                ],
-                "execution_count": None,
-                "outputs": []
-            },
-            {
-                "cell_type": "code",
-                "metadata": {},
-                "source": [
-                    "# Run Phase 3 (FixMatch)\n",
-                    "!python colab_experiment_runner.py --phase 3\n",
-                ],
-                "execution_count": None,
-                "outputs": []
-            },
-            {
-                "cell_type": "code",
-                "metadata": {},
-                "source": [
-                    "# Run Phase 4 (Architecture Comparison)\n",
-                    "!python colab_experiment_runner.py --phase 4\n",
-                ],
-                "execution_count": None,
-                "outputs": []
-            },
-        ]
-    }
-    
-    with open("PDA_Experiments.ipynb", 'w') as f:
-        json.dump(notebook, f, indent=2)
-    
-    print("Generated: PDA_Experiments.ipynb")
 
 
 # =============================================================================

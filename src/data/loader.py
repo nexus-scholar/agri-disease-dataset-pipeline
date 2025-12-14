@@ -241,7 +241,7 @@ def load_data_modules(
     pool_test_split: float = 0.8,
     source_dir: Optional[Path] = None,
     target_dir: Optional[Path] = None,
-    num_workers: int = 0,
+    num_workers: int = -1,  # -1 = auto-detect
     verbose: bool = True,
     use_strong_aug: bool = False,
 ) -> Dict[str, Any]:
@@ -278,11 +278,26 @@ def load_data_modules(
             - target_dataset: Full target dataset
             - crop_config: CropConfig object (if single crop)
     """
+    import os
+    import platform
+
     source_dir = Path(source_dir or PLANTVILLAGE_DIR)
     target_dir = Path(target_dir or PLANTDOC_DIR)
 
     import time
     t_start = time.time()
+
+    # Auto-detect num_workers if not specified
+    if num_workers < 0:
+        if platform.system() == 'Windows':
+            # Windows has issues with multiprocessing in DataLoader
+            num_workers = 0
+        else:
+            # Linux/Colab: use multiple workers for faster data loading
+            # Use min of 4 or available CPUs
+            num_workers = min(4, os.cpu_count() or 1)
+        if verbose:
+            print(f"  [Data] Auto-detected num_workers={num_workers} ({platform.system()})", flush=True)
 
     # Get transforms (with optional strong augmentation)
     train_transform = get_train_transforms(strong=use_strong_aug)
@@ -361,17 +376,23 @@ def load_data_modules(
     train_subset = Subset(source_train, list(train_indices))
     val_subset = Subset(source_val, list(val_indices))
 
+    # Check if CUDA is available for pin_memory optimization
+    import torch
+    pin_memory = torch.cuda.is_available() and num_workers > 0
+
     train_loader = DataLoader(
         train_subset,
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
+        pin_memory=pin_memory,
     )
     val_loader = DataLoader(
         val_subset,
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
+        pin_memory=pin_memory,
     )
 
     # Split target into pool/test
@@ -396,6 +417,7 @@ def load_data_modules(
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
+        pin_memory=pin_memory,
     )
 
     print(f"  [Data] Train: {len(train_subset)}, Val: {len(val_subset)}, Pool: {len(pool_subset)}, Test: {len(test_subset)}", flush=True)
