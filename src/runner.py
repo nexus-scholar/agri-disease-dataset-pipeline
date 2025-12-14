@@ -489,6 +489,9 @@ def main():
     # Enable cudnn benchmark for faster convolutions (input size is fixed at 224x224)
     if torch.cuda.is_available():
         torch.backends.cudnn.benchmark = True
+        # Use TF32 for faster computation on Ampere GPUs (A100)
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
 
     print(f"Using device: {device} (init: {cuda_time:.1f}s, total startup: {time.time() - t_start:.1f}s)", flush=True)
 
