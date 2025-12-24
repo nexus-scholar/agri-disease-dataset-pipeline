@@ -1,0 +1,183 @@
+{
+  "project": "Partial Domain Adaptation Agricultural Edge AI",
+  "generated_at": "2025-12-14T19:12:35.711773",
+  "tables": {
+    "baseline_gap": [
+      {
+        "crop": "tomato",
+        "model": "mobilenetv3",
+        "lab_acc": 99.76,
+        "field_acc": 22.0,
+        "gap": 77.76
+      },
+      {
+        "crop": "tomato",
+        "model": "efficientnet",
+        "lab_acc": 99.9,
+        "field_acc": 19.33,
+        "gap": 80.56
+      },
+      {
+        "crop": "tomato",
+        "model": "mobilevit",
+        "lab_acc": 99.74,
+        "field_acc": 30.67,
+        "gap": 69.08
+      },
+      {
+        "crop": "potato",
+        "model": "mobilenetv3",
+        "lab_acc": 100.0,
+        "field_acc": 57.78,
+        "gap": 42.22
+      },
+      {
+        "crop": "potato",
+        "model": "efficientnet",
+        "lab_acc": 100.0,
+        "field_acc": 44.44,
+        "gap": 55.56
+      },
+      {
+        "crop": "potato",
+        "model": "mobilevit",
+        "lab_acc": 99.88,
+        "field_acc": 60.0,
+        "gap": 39.88
+      },
+      {
+        "crop": "pepper",
+        "model": "mobilenetv3",
+        "lab_acc": 100.0,
+        "field_acc": 74.07,
+        "gap": 25.93
+      },
+      {
+        "crop": "pepper",
+        "model": "efficientnet",
+        "lab_acc": 100.0,
+        "field_acc": 40.74,
+        "gap": 59.26
+      },
+      {
+        "crop": "pepper",
+        "model": "mobilevit",
+        "lab_acc": 100.0,
+        "field_acc": 62.96,
+        "gap": 37.04
+      },
+      {
+        "crop": "tomato,potato,pepper",
+        "model": "mobilenetv3",
+        "lab_acc": 99.14,
+        "field_acc": 15.91,
+        "gap": 83.23
+      },
+      {
+        "crop": "tomato,potato,pepper",
+        "model": "efficientnet",
+        "lab_acc": 99.68,
+        "field_acc": 19.55,
+        "gap": 80.13
+      },
+      {
+        "crop": "tomato,potato,pepper",
+        "model": "mobilevit",
+        "lab_acc": 99.43,
+        "field_acc": 17.73,
+        "gap": 81.7
+      }
+    ],
+    "fixmatch_results": [
+      {
+        "crop": "tomato",
+        "model": "mobilenetv3",
+        "field_acc": 27.33
+      },
+      {
+        "crop": "potato",
+        "model": "mobilenetv3",
+        "field_acc": 60.0
+      },
+      {
+        "crop": "pepper",
+        "model": "mobilenetv3",
+        "field_acc": 81.48
+      }
+    ],
+    "architecture_bench": [
+      {
+        "crop": "tomato",
+        "model": "efficientnet",
+        "field_acc": 42.0
+      },
+      {
+        "crop": "tomato",
+        "model": "mobilevit",
+        "field_acc": 37.33
+      },
+      {
+        "crop": "potato",
+        "model": "efficientnet",
+        "field_acc": 60.0
+      },
+      {
+        "crop": "potato",
+        "model": "mobilevit",
+        "field_acc": 57.78
+      }
+    ]
+  },
+  "insights": {
+    "negative_transfer": [
+      {
+        "experiment": "P1_04_baseline_potato_mobilenetv3",
+        "model": "mobilenetv3",
+        "healthy_predictions": 0,
+        "negative_transfer_eliminated": true
+      },
+      {
+        "experiment": "P1_05_baseline_potato_efficientnet",
+        "model": "efficientnet",
+        "healthy_predictions": 4,
+        "negative_transfer_eliminated": false
+      },
+      {
+        "experiment": "P1_06_baseline_potato_mobilevit",
+        "model": "mobilevit",
+        "healthy_predictions": 2,
+        "negative_transfer_eliminated": false
+      },
+      {
+        "experiment": "P2_02_strongaug_potato",
+        "model": "mobilenetv3",
+        "healthy_predictions": 1,
+        "negative_transfer_eliminated": false
+      },
+      {
+        "experiment": "P3_04_AL_hybrid_potato",
+        "model": "mobilenetv3",
+        "healthy_predictions": 0,
+        "negative_transfer_eliminated": true
+      },
+      {
+        "experiment": "P4_02_fixmatch_potato",
+        "model": "mobilenetv3",
+        "healthy_predictions": 0,
+        "negative_transfer_eliminated": true
+      },
+      {
+        "experiment": "P5_03_efficientnet_potato_fixmatch",
+        "model": "efficientnet",
+        "healthy_predictions": 1,
+        "negative_transfer_eliminated": false
+      },
+      {
+        "experiment": "P5_04_mobilevit_potato_fixmatch",
+        "model": "mobilevit",
+        "healthy_predictions": 1,
+        "negative_transfer_eliminated": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,187 @@
+% =============================================================================
+% DATASETS
+% =============================================================================
+
+@article{hughes2015plantvillage,
+  title={An open access repository of images on plant health to enable the development of mobile disease diagnostics},
+  author={Hughes, David P and Salath{\'e}, Marcel},
+  journal={arXiv preprint arXiv:1511.08060},
+  year={2015},
+  note={Source Domain Dataset}
+}
+
+@inproceedings{singh2020plantdoc,
+  title={PlantDoc: a dataset for visual plant disease detection},
+  author={Singh, Davinder and Jain, Naman and Jain, Pranjali and Kayal, Pratik and Kumawat, Sudhakar and Batra, Nipun},
+  booktitle={Proceedings of the 7th ACM IKDD CoDS and 25th COMAD},
+  pages={249--253},
+  year={2020},
+  note={Target Domain Dataset (Field)}
+}
+
+% =============================================================================
+% CORE ARCHITECTURES (The Benchmark Comparison)
+% =============================================================================
+
+@inproceedings{howard2019mobilenetv3,
+  title={Searching for mobilenetv3},
+  author={Howard, Andrew and Sandler, Mark and Chu, Grace and Chen, Liang-Chieh and Chen, Bo and Tan, Mingxing and Wang, Weijun and Zhu, Yukun and Pang, Ruoming and Vasudevan, Vijay and others},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages={1314--1324},
+  year={2019},
+  note={Ours (Lightweight)}
+}
+
+@inproceedings{tan2019efficientnet,
+  title={Efficientnet: Rethinking model scaling for convolutional neural networks},
+  author={Tan, Mingxing and Le, Quoc},
+  booktitle={International conference on machine learning},
+  pages={6105--6114},
+  year={2019},
+  organization={PMLR},
+  note={Baseline (Heavy CNN)}
+}
+
+@inproceedings{mehta2021mobilevit,
+  title={Mobilevit: Light-weight, general-purpose, and mobile-friendly vision transformer},
+  author={Mehta, Sachin and Rastegari, Mohammad},
+  booktitle={International Conference on Learning Representations},
+  year={2021},
+  note={Baseline (Transformer)}
+}
+
+% =============================================================================
+% METHODOLOGY (Algorithms)
+% =============================================================================
+
+@inproceedings{sohn2020fixmatch,
+  title={Fixmatch: Simplifying semi-supervised learning with consistency and confidence},
+  author={Sohn, Kihyun and Berthelot, David and Carlini, Nicholas and Zhang, Zizhao and Zhang, Han and Raffel, Colin A and Cubuk, Ekin Dogus and Kurakin, Alexey and Li, Chun-Liang},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={33},
+  pages={596--608},
+  year={2020},
+  note={Core SSL Method}
+}
+
+@inproceedings{yuan2020cold,
+  title={Cold-start Active Learning with Robust Ordinal Matrix Factorization},
+  author={Yuan, Ye and Ding, Guiguang and Li, Jiansheng and Hu, Henghui},
+  booktitle={Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year={2020},
+  note={Justifies Hybrid Warm-Start Strategy}
+}
+
+@article{settles2009active,
+  title={Active learning literature survey},
+  author={Settles, Burr},
+  journal={Computer Sciences Technical Report 1648, University of Wisconsin-Madison},
+  year={2009},
+  note={Standard AL Reference}
+}
+
+% =============================================================================
+% THEORETICAL FOUNDATION (Partial Domain Adaptation)
+% =============================================================================
+
+@inproceedings{wang2019characterizing,
+  title={Characterizing and avoiding negative transfer},
+  author={Wang, Zirui and Dai, Zihang and P{\'o}czos, Barnab{\'a}s and Carbonell, Jaime},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={11293--11302},
+  year={2019},
+  note={Theoretical proof of Negative Transfer}
+}
+
+@inproceedings{cao2018partial,
+  title={Partial adversarial domain adaptation},
+  author={Cao, Zhangjie and Ma, Long and Long, Mingsheng and Wang, Jianmin},
+  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+  pages={135--150},
+  year={2018},
+  note={Definition of Partial DA}
+}
+
+@inproceedings{luo2023masked,
+  title={Masked Optimal Transport for Partial Domain Adaptation},
+  author={Luo, Y. and Ren, C.},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2023},
+  note={Proof that naive alignment fails in PDA}
+}
+
+% =============================================================================
+% RECENT FOILS (2023-2025 Competitors)
+% =============================================================================
+
+@article{salman2025plant,
+  title={Plant disease classification in the wild using vision transformers and mixture of experts},
+  author={Salman, M. and others},
+  journal={Frontiers in Plant Science},
+  year={2025},
+  note={Foil: High Accuracy but High Compute (MoE)}
+}
+
+@article{zubair2025robust,
+  title={A Robust Ensemble Model for Plant Disease Detection Using Deep Learning Architectures},
+  author={Zubair, M. and others},
+  journal={AgriEngineering},
+  year={2025},
+  note={Foil: Heavy Ensemble method}
+}
+
+@article{khaled2023laboratory,
+  title={From laboratory to field: Unsupervised domain adaptation for plant disease recognition in the wild},
+  author={Khaled, Kareem R and others},
+  journal={Computers and Electronics in Agriculture},
+  year={2023},
+  note={Foil: Effective DA but ignores edge constraints}
+}
+
+@inproceedings{choudhuri2023robust,
+  title={A Robust Negative Learning Approach to Partial Domain Adaptation Using Source Prototypes},
+  author={Choudhuri, Sandipan and Adeniye, Suli and Sen, Arunabha},
+  booktitle={2023 IEEE International Conference on Machine Learning and Applications (ICMLA)},
+  year={2023},
+  note={Mathematical proof of PDA risks}
+}
+
+@article{rawat2022active,
+  title={How Useful Is Image-Based Active Learning for Plant Organ Segmentation?},
+  author={Rawat, S. and others},
+  journal={Plant Phenomics},
+  year={2022},
+  note={Shows Naive AL fails in Ag}
+}
+
+% =============================================================================
+% ECONOMIC & AGRONOMIC CONTEXT
+% =============================================================================
+
+@article{savary2019global,
+  title={The global burden of pathogens and pests on major food crops},
+  author={Savary, Serge and Willocquet, Laetitia and Pethybridge, Sarah J and Esker, Paul and McRoberts, Neil and Nelson, Andrew},
+  journal={Nature ecology \& evolution},
+  volume={3},
+  number={3},
+  pages={430--439},
+  year={2019},
+  note={Yield Loss statistics}
+}
+
+@article{zhang2024remote,
+  title={The Role of Temporal Resolution in Crop Monitoring: A Review},
+  author={Zhang, X. and others},
+  journal={Remote Sensing},
+  volume={16},
+  year={2024},
+  note={Justifies Frequency > Accuracy for scouting}
+}
+
+@article{li2022economic,
+  title={Economic impact of precision fungicide application in potato production},
+  author={Li, Y. and others},
+  journal={Journal of Agricultural Economics},
+  year={2022},
+  note={Justifies the $615/ha cost argument}
+}

@@ -1,0 +1,27 @@
+exp_id,phase,name,crop,model,strategy,use_fixmatch,use_strong_aug,val_acc,field_acc,gap,duration_seconds,success,exp_dir,history_length,al_rounds
+P1-01,P1,Baseline Tomato mobilenetv3,tomato,mobilenetv3,none,False,False,99.67,22.0,77.67,442.677814,True,P1_01_baseline_tomato_mobilenetv3_20251214_162301,10,0
+P1-02,P1,Baseline Tomato efficientnet,tomato,efficientnet,none,False,False,99.32,19.33,79.99,458.505722,True,P1_02_baseline_tomato_efficientnet_20251214_163024,10,0
+P1-03,P1,Baseline Tomato mobilevit,tomato,mobilevit,none,False,False,99.74,30.67,69.07,397.106675,True,P1_03_baseline_tomato_mobilevit_20251214_163802,10,0
+P1-04,P1,Baseline Potato mobilenetv3,potato,mobilenetv3,none,False,False,99.42,57.78,41.64,123.014841,True,P1_04_baseline_potato_mobilenetv3_20251214_164439,10,0
+P1-05,P1,Baseline Potato efficientnet,potato,efficientnet,none,False,False,99.77,44.44,55.33,130.450842,True,P1_05_baseline_potato_efficientnet_20251214_164642,10,0
+P1-06,P1,Baseline Potato mobilevit,potato,mobilevit,none,False,False,99.88,60.0,39.879999999999995,77.266122,True,P1_06_baseline_potato_mobilevit_20251214_164852,10,0
+P1-07,P1,Baseline Pepper mobilenetv3,pepper,mobilenetv3,none,False,False,100.0,74.07,25.930000000000007,128.811783,True,P1_07_baseline_pepper_mobilenetv3_20251214_165010,10,0
+P1-08,P1,Baseline Pepper efficientnet,pepper,efficientnet,none,False,False,100.0,40.74,59.26,137.440168,True,P1_08_baseline_pepper_efficientnet_20251214_165218,10,0
+P1-09,P1,Baseline Pepper mobilevit,pepper,mobilevit,none,False,False,100.0,62.96,37.04,84.579183,True,P1_09_baseline_pepper_mobilevit_20251214_165436,10,0
+P1-10,P1,Baseline All Crops mobilenetv3,all,mobilenetv3,none,False,False,99.14,15.91,83.23,659.633651,True,P1_10_baseline_all_mobilenetv3_20251214_165600,10,0
+P1-11,P1,Baseline All Crops efficientnet,all,efficientnet,none,False,False,99.68,19.55,80.13000000000001,875.066478,True,P1_11_baseline_all_efficientnet_20251214_170700,10,0
+P1-12,P1,Baseline All Crops mobilevit,all,mobilevit,none,False,False,99.43,17.73,81.7,905.811996,True,P1_12_baseline_all_mobilevit_20251214_172135,10,0
+P2-01,P2,StrongAug Tomato,tomato,mobilenetv3,none,False,True,98.68,24.0,74.68,264.382298,True,P2_01_strongaug_tomato_20251214_173641,10,0
+P2-02,P2,StrongAug Potato,potato,mobilenetv3,none,False,True,99.77,62.22,37.55,96.814817,True,P2_02_strongaug_potato_20251214_174105,10,0
+P2-03,P2,StrongAug Pepper,pepper,mobilenetv3,none,False,True,99.39,59.26,40.13,100.249564,True,P2_03_strongaug_pepper_20251214_174242,10,0
+P3-01,P3,AL Random (Tomato),tomato,mobilenetv3,random,False,False,0.0,19.33,0.0,133.215246,True,P3_01_AL_random_tomato_20251214_174422,0,6
+P3-02,P3,AL Entropy (Tomato),tomato,mobilenetv3,entropy,False,False,0.0,21.33,0.0,201.744029,True,P3_02_AL_entropy_tomato_20251214_174636,0,6
+P3-03,P3,AL Hybrid (Tomato),tomato,mobilenetv3,hybrid,False,False,0.0,24.0,0.0,201.807692,True,P3_03_AL_hybrid_tomato_20251214_174958,0,6
+P3-04,P3,AL Hybrid (Potato),potato,mobilenetv3,hybrid,False,False,0.0,57.78,0.0,194.303374,True,P3_04_AL_hybrid_potato_20251214_175319,0,6
+P4-01,P4,FixMatch (Tomato),tomato,mobilenetv3,none,True,False,0.0,27.33,0.0,624.028324,True,P4_01_fixmatch_tomato_20251214_175634,0,6
+P4-02,P4,FixMatch (Potato),potato,mobilenetv3,none,True,False,0.0,60.0,0.0,579.15345,True,P4_02_fixmatch_potato_20251214_180657,0,6
+P4-03,P4,FixMatch (Pepper),pepper,mobilenetv3,none,True,False,0.0,81.48,0.0,463.858326,True,P4_03_fixmatch_pepper_20251214_181639,0,6
+P5-01,P5,Benchmark efficientnet (Tomato),tomato,efficientnet,none,False,False,0.0,42.0,0.0,735.504342,True,P5_01_efficientnet_tomato_fixmatch_20251214_182423,0,6
+P5-02,P5,Benchmark mobilevit (Tomato),tomato,mobilevit,none,False,False,0.0,37.33,0.0,531.854815,True,P5_02_mobilevit_tomato_fixmatch_20251214_183638,0,6
+P5-03,P5,Benchmark efficientnet (Potato),potato,efficientnet,none,False,False,0.0,60.0,0.0,503.88277,True,P5_03_efficientnet_potato_fixmatch_20251214_184530,0,6
+P5-04,P5,Benchmark mobilevit (Potato),potato,mobilevit,none,False,False,0.0,57.78,0.0,306.267893,True,P5_04_mobilevit_potato_fixmatch_20251214_185352,0,6

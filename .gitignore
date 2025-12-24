@@ -1,7 +1,7 @@
 .idea/
 data/raw
-data/processed
-models/
+# data/processed
+# models/  <-- Commented out to allow src/models
 logs/
 __pycache__/
 *.pyc

@@ -1,0 +1,5 @@
+crop,strategy,field_acc
+tomato,random,19.33
+tomato,entropy,21.33
+tomato,hybrid,24.0
+potato,hybrid,57.78

@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "generated_at": "2025-12-14T19:10:03.556931",
+    "project_title": "Partial Domain Adaptation Agricultural Edge AI",
+    "stats": {
+      "total_runs": 28,
+      "successful_runs": 26
+    }
+  },
+  "tables": {
+    "baseline_gap": [
+      {
+        "crop": "tomato",
+        "model": "mobilenetv3",
+        "lab_accuracy": 98.85,
+        "field_accuracy": 0.0,
+        "generalization_gap": 98.85
+      },
+      {
+        "crop": "tomato",
+        "model": "mobilenetv3",
+        "lab_accuracy": 97.81,
+        "field_accuracy": 0.0,
+        "generalization_gap": 97.81
+      },
+      {
+        "crop": "tomato",
+        "model": "mobilenetv3",
+        "lab_accuracy": 99.76,
+        "field_accuracy": 22.0,
+        "generalization_gap": 77.76
+      },
+      {
+        "crop": "tomato",
+        "model": "efficientnet",
+        "lab_accuracy": 99.9,
+        "field_accuracy": 19.33,
+        "generalization_gap": 80.56
+      },
+      {
+        "crop": "tomato",
+        "model": "mobilevit",
+        "lab_accuracy": 99.74,
+        "field_accuracy": 30.67,
+        "generalization_gap": 69.08
+      },
+      {
+        "crop": "potato",
+        "model": "mobilenetv3",
+        "lab_accuracy": 100.0,
+        "field_accuracy": 57.78,
+        "generalization_gap": 42.22
+      },
+      {
+        "crop": "potato",
+        "model": "efficientnet",
+        "lab_accuracy": 100.0,
+        "field_accuracy": 44.44,
+        "generalization_gap": 55.56
+      },
+      {
+        "crop": "potato",
+        "model": "mobilevit",
+        "lab_accuracy": 99.88,
+        "field_accuracy": 60.0,
+        "generalization_gap": 39.88
+      },
+      {
+        "crop": "pepper",
+        "model": "mobilenetv3",
+        "lab_accuracy": 100.0,
+        "field_accuracy": 74.07,
+        "generalization_gap": 25.93
+      },
+      {
+        "crop": "pepper",
+        "model": "efficientnet",
+        "lab_accuracy": 100.0,
+        "field_accuracy": 40.74,
+        "generalization_gap": 59.26
+      },
+      {
+        "crop": "pepper",
+        "model": "mobilevit",
+        "lab_accuracy": 100.0,
+        "field_accuracy": 62.96,
+        "generalization_gap": 37.04
+      },
+      {
+        "crop": "tomato,potato,pepper",
+        "model": "mobilenetv3",
+        "lab_accuracy": 99.14,
+        "field_accuracy": 15.91,
+        "generalization_gap": 83.23
+      },
+      {
+        "crop": "tomato,potato,pepper",
+        "model": "efficientnet",
+        "lab_accuracy": 99.68,
+        "field_accuracy": 19.55,
+        "generalization_gap": 80.13
+      },
+      {
+        "crop": "tomato,potato,pepper",
+        "model": "mobilevit",
+        "lab_accuracy": 99.43,
+        "field_accuracy": 17.73,
+        "generalization_gap": 81.7
+      }
+    ],
+    "method_efficacy": [
+      {
+        "crop": "potato",
+        "baseline_acc": 57.78,
+        "ours_acc": 60.0,
+        "improvement": 2.22,
+        "relative_gain": 3.8
+      },
+      {
+        "crop": "tomato",
+        "baseline_acc": 22.0,
+        "ours_acc": 27.33,
+        "improvement": 5.33,
+        "relative_gain": 24.2
+      },
+      {
+        "crop": "pepper",
+        "baseline_acc": 74.07,
+        "ours_acc": 81.48,
+        "improvement": 7.41,
+        "relative_gain": 10.0
+      }
+    ],
+    "architecture_benchmark": [
+      {
+        "model": "mobilenetv3",
+        "field_accuracy": 60.0
+      },
+      {
+        "model": "efficientnet",
+        "field_accuracy": 60.0
+      },
+      {
+        "model": "mobilevit",
+        "field_accuracy": 57.78
+      }
+    ],
+    "negative_transfer_check": [
+      {
+        "id": "P4_02_fixmatch_potato",
+        "model": "mobilenetv3",
+        "healthy_false_positives": 0,
+        "status": "CLEAN"
+      },
+      {
+        "id": "P5_03_efficientnet_potato_fixmatch",
+        "model": "efficientnet",
+        "healthy_false_positives": 1,
+        "status": "CONTAMINATED"
+      },
+      {
+        "id": "P5_04_mobilevit_potato_fixmatch",
+        "model": "mobilevit",
+        "healthy_false_positives": 1,
+        "status": "CONTAMINATED"
+      }
+    ]
+  },
+  "key_insights": []
+}

@@ -1,0 +1,179 @@
+(.venv) PS D:\experiments\dataset-processing> cd D:\experiments\dataset-processing ; python investigate_zero_f1.py 2>&1
+================================================================================
+🔍 ZERO-F1 CLASS INVESTIGATION
+================================================================================
+
+================================================================================
+1️⃣ TARGET DATASET SAMPLE COUNTS
+================================================================================
+
+PlantDoc (target domain) has the following samples per class:
+
+  ⚠️ CRITICAL tomato_spider_mites: 4 samples
+  ✅ tomato_mosaic_virus: 108 samples
+  ✅ tomato_healthy: 126 samples
+  ✅ tomato_yellow_leaf_curl: 152 samples
+  ✅ tomato_early_blight: 176 samples
+  ✅ tomato_leaf_mold: 182 samples
+  ✅ tomato_bacterial_spot: 220 samples
+  ✅ tomato_late_blight: 222 samples
+  ✅ tomato_septoria_spot: 301 samples
+
+------------------------------------------------------------
+DIAGNOSIS: tomato_spider_mites has only 4 samples in PlantDoc!
+With 80/20 train/test split → ~1 sample in test set on average
+High probability of 0 samples in test set!
+------------------------------------------------------------
+
+================================================================================
+2️⃣ TEST SET SUPPORT ANALYSIS (ACTUAL VALUES)
+================================================================================
+
+MobileNetV3 Baseline:
+  ⚠️ tomato_bacterial_spot: support=27.0, F1=0.071 (very poor)
+  ⚠️ tomato_healthy: support=14.0, F1=0.091 (very poor)
+  ⚠️ tomato_leaf_mold: support=21.0, F1=0 (never detected)
+  ⚠️ tomato_mosaic_virus: support=14.0, F1=0 (never detected)
+  ❌ tomato_spider_mites: support=0 (NO SAMPLES IN TEST SET!)
+
+EfficientNet Baseline:
+  ⚠️ tomato_bacterial_spot: support=27.0, F1=0 (never detected)
+  ⚠️ tomato_healthy: support=14.0, F1=0 (never detected)
+  ⚠️ tomato_leaf_mold: support=21.0, F1=0 (never detected)
+  ⚠️ tomato_mosaic_virus: support=14.0, F1=0 (never detected)
+  ❌ tomato_spider_mites: support=0 (NO SAMPLES IN TEST SET!)
+  ⚠️ tomato_yellow_leaf_curl: support=12.0, F1=0 (never detected)
+
+MobileViT Baseline:
+  ⚠️ tomato_bacterial_spot: support=27.0, F1=0.071 (very poor)
+  ⚠️ tomato_mosaic_virus: support=14.0, F1=0 (never detected)
+  ❌ tomato_spider_mites: support=0 (NO SAMPLES IN TEST SET!)
+  ⚠️ tomato_yellow_leaf_curl: support=12.0, F1=0 (never detected)
+
+Strong Aug:
+  ⚠️ tomato_bacterial_spot: support=27.0, F1=0 (never detected)
+  ⚠️ tomato_leaf_mold: support=21.0, F1=0.080 (very poor)
+  ⚠️ tomato_mosaic_virus: support=14.0, F1=0 (never detected)
+  ❌ tomato_spider_mites: support=0 (NO SAMPLES IN TEST SET!)
+
+================================================================================
+3️⃣ CONFUSION ANALYSIS: tomato_mosaic_virus
+================================================================================
+
+True samples: 14
+Times predicted: 0
+Correct: 0
+
+Misclassified as:
+  → tomato_early_blight: 8 times
+  → tomato_late_blight: 4 times
+  → tomato_healthy: 1 times
+  → tomato_septoria_spot: 1 times
+
+================================================================================
+4️⃣ CONFUSION ANALYSIS: tomato_leaf_mold
+================================================================================
+
+True samples: 21
+Times predicted: 1
+Correct: 0
+
+Misclassified as:
+  → tomato_early_blight: 11 times
+  → tomato_late_blight: 8 times
+  → tomato_septoria_spot: 2 times
+
+================================================================================
+5️⃣ FULL CONFUSION PATTERN ANALYSIS
+================================================================================
+
+Prediction bias (what classes are over/under predicted):
+  tomato_bacterial_spot: true=27, pred=1, ratio=0.04 📉 UNDER-predicted
+  tomato_early_blight: true=14, pred=77, ratio=5.50 📈 OVER-predicted
+  tomato_healthy: true=14, pred=8, ratio=0.57 ✅ Balanced
+  tomato_late_blight: true=15, pred=38, ratio=2.53 📈 OVER-predicted
+  tomato_leaf_mold: true=21, pred=1, ratio=0.05 📉 UNDER-predicted
+  tomato_mosaic_virus: true=14, pred=0, ratio=0.00 📉 UNDER-predicted
+  tomato_septoria_spot: true=33, pred=19, ratio=0.58 ✅ Balanced
+  tomato_spider_mites: true=0, pred=1, ratio=0.00 📉 UNDER-predicted
+  tomato_yellow_leaf_curl: true=12, pred=5, ratio=0.42 📉 UNDER-predicted
+
+Key over-predicted class (receives most confusion):
+  → tomato_early_blight: predicted 77 times
+
+Attractor class analysis (tomato_early_blight):
+  Total predictions as early_blight: 77/150 = 51.3%
+
+================================================================================
+📊 ROOT CAUSE SUMMARY
+================================================================================
+
+┌─────────────────────────────────┬──────────────────────────────────────────┐
+│ Class                           │ Root Cause                                │
+├─────────────────────────────────┼──────────────────────────────────────────┤
+│ tomato_spider_mites             │ DATA SCARCITY: Only 4 samples in PlantDoc │
+│                                 │ → 0 samples in test set (support=0)      │
+│                                 │ → Not a model failure!                   │
+├─────────────────────────────────┼──────────────────────────────────────────┤
+│ tomato_mosaic_virus             │ EXTREME DOMAIN SHIFT:                    │
+│                                 │ → Visual features don't transfer         │
+│                                 │ → Confused with early_blight (similar    │
+│                                 │   yellowing pattern in field conditions) │
+├─────────────────────────────────┼──────────────────────────────────────────┤
+│ tomato_leaf_mold                │ DOMAIN SHIFT + VISUAL SIMILARITY:        │
+│                                 │ → Confused with late_blight/early_blight │
+│                                 │ → Fungal symptoms look different in field│
+├─────────────────────────────────┼──────────────────────────────────────────┤
+│ tomato_bacterial_spot           │ CONFUSION with late_blight & septoria    │
+│                                 │ → All cause spotting patterns            │
+│                                 │ → Lab vs field lighting affects spots    │
+├─────────────────────────────────┼──────────────────────────────────────────┤
+│ tomato_yellow_leaf_curl         │ MODERATE SHIFT:                          │
+│                                 │ → Virus symptoms appear different        │
+│                                 │ → Confused with early_blight (yellowing) │
+└─────────────────────────────────┴──────────────────────────────────────────┘
+
+
+================================================================================
+💡 RECOMMENDATIONS
+================================================================================
+
+1. tomato_spider_mites:
+   ✗ CANNOT FIX with better models
+   ✓ SOLUTION: Collect more field samples or exclude from evaluation
+   ✓ NOTE: Remove from canonical classes or stratified sampling
+
+2. tomato_mosaic_virus:
+   ✓ SOLUTION: Fine-grained attention models
+   ✓ SOLUTION: More target labels for this class specifically
+   ✓ Try: Class-weighted loss during FixMatch
+
+3. tomato_leaf_mold:
+   ✓ Improves with FixMatch (F1=0.61 with EfficientNet!)
+   ✓ Domain adaptation is working for this class
+
+4. General:
+   ✓ Use stratified test split to guarantee samples
+   ✓ Consider macro-averaged metrics over micro
+   ✓ Report per-class results in paper (some classes are unsolvable)
+
+
+================================================================================
+8️⃣ CLASS-LEVEL IMPROVEMENT WITH FIXMATCH
+================================================================================
+
+F1 Score Comparison (Baseline vs FixMatch vs EfficientNet+FixMatch):
+----------------------------------------------------------------------
+Class                            Baseline   FixMatch      EN+FM
+----------------------------------------------------------------------
+tomato_bacterial_spot               0.071      0.061      0.340 📈
+tomato_early_blight                 0.264      0.182      0.538 📈
+tomato_healthy                      0.091      0.077      0.529 📈
+tomato_late_blight                  0.377      0.483      0.500 📈
+tomato_leaf_mold                    0.000      0.000      0.606 📈
+tomato_mosaic_virus                 0.000      0.222      0.000 ➖
+tomato_septoria_spot                0.269      0.400      0.360 ➖
+tomato_spider_mites                 0.000      0.000      0.000 ➖
+tomato_yellow_leaf_curl             0.235      0.390      0.462 📈
+----------------------------------------------------------------------
+(.venv) PS D:\experiments\dataset-processing>

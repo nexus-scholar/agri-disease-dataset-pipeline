@@ -1,0 +1,7 @@
+Crop,Architecture,Field_Acc
+Tomato,mobilenetv3,27.3%
+Tomato,efficientnet,42.0%
+Tomato,mobilevit,37.3%
+Potato,mobilenetv3,60.0%
+Potato,efficientnet,60.0%
+Potato,mobilevit,57.8%

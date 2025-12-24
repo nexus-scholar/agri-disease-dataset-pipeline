@@ -1,0 +1,18 @@
+{
+  "dataset": "TomatoLeafMulticlass",
+  "processed": [
+    [
+      "raw_images",
+      731
+    ],
+    [
+      "annotated_train",
+      597
+    ],
+    [
+      "annotated_test",
+      31
+    ]
+  ],
+  "total_records": 1359
+}

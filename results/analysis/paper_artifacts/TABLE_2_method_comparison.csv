@@ -1,0 +1,4 @@
+Crop,Baseline,StrongAug,AL_Hybrid,FixMatch,Improvement
+Tomato,22.0,24.0,24.0,27.3,+5.3
+Potato,57.8,62.2,57.8,60.0,+2.2
+Pepper,74.1,59.3,-,81.5,+7.4

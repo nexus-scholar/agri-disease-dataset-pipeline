@@ -1,0 +1,6 @@
+,field_acc,field_acc,field_acc,gap,gap,gap,val_acc,val_acc,val_acc
+model,efficientnet,mobilenetv3,mobilevit,efficientnet,mobilenetv3,mobilevit,efficientnet,mobilenetv3,mobilevit
+crop,,,,,,,,,
+pepper,40.74,74.07,62.96,59.26,25.93,37.04,100.0,100.0,100.0
+potato,44.44,57.78,60.0,55.33,41.64,39.88,99.77,99.42,99.88
+tomato,19.33,22.0,30.67,79.99,77.67,69.07,99.32,99.67,99.74

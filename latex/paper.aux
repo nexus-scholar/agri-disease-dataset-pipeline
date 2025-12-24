@@ -1,0 +1,77 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{zubair2025robust}
+\citation{hughes2015plantvillage}
+\citation{singh2020plantdoc}
+\citation{wang2019characterizing}
+\citation{salman2025plant}
+\citation{yuan2020cold}
+\citation{sohn2020fixmatch}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{salman2025plant}
+\citation{zubair2025robust}
+\citation{luo2023mot}
+\citation{rawat2022active}
+\citation{howard2019mobilenetv3}
+\citation{tan2019efficientnet}
+\citation{mehta2021mobilevit}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Heavy Architectures for Cross-Domain Plant Disease}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Partial Domain Adaptation (PDA) and Negative Transfer}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Active Learning in Agriculture}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methodology}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Problem Formulation: Partial Domain Adaptation}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Dataset Configuration and Semantic Alignment}{2}{subsection.3.2}\protected@file@percent }
+\citation{yuan2020cold}
+\citation{sohn2020fixmatch}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Dataset Configuration. The Potato scenario is a strict Partial Domain Adaptation problem where the 'Healthy' class exists in the Source but not the Target.}}{3}{table.1}\protected@file@percent }
+\newlabel{tab:dataset_config}{{1}{3}{Dataset Configuration. The Potato scenario is a strict Partial Domain Adaptation problem where the 'Healthy' class exists in the Source but not the Target}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Edge-Optimized Architecture}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Hybrid Warm-Start Active Learning}{3}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Semi-Supervised Consistency Regularization (FixMatch)}{3}{subsection.3.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces System Overview. The framework initializes with a Source Model, selects informative samples via Hybrid Active Learning for Human Annotation, and refines the model utilizing both labeled and unlabeled data via FixMatch to filter Phantom Classes.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:system_overview}{{1}{3}{System Overview. The framework initializes with a Source Model, selects informative samples via Hybrid Active Learning for Human Annotation, and refines the model utilizing both labeled and unlabeled data via FixMatch to filter Phantom Classes}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{3}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Quantification of the Generalization Gap}{3}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Visualizing the Generalization Gap. Bar chart comparing Source vs. Target accuracy across crops.}}{4}{figure.2}\protected@file@percent }
+\newlabel{fig:valley_of_death}{{2}{4}{Visualizing the Generalization Gap. Bar chart comparing Source vs. Target accuracy across crops}{figure.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The ``Valley of Death'': Generalization gaps between Source (Lab) and Target (Field) test sets.}}{4}{table.2}\protected@file@percent }
+\newlabel{tab:baseline_gap}{{2}{4}{The ``Valley of Death'': Generalization gaps between Source (Lab) and Target (Field) test sets}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Efficacy of Active Domain Adaptation}{4}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Performance Recovery. Comparison of Source-Only Baseline vs. Hybrid FixMatch Adaptation.}}{4}{figure.3}\protected@file@percent }
+\newlabel{fig:recovery}{{3}{4}{Performance Recovery. Comparison of Source-Only Baseline vs. Hybrid FixMatch Adaptation}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Performance Recovery \& Negative Transfer Mitigation (N=50 Labels)}}{4}{table.3}\protected@file@percent }
+\newlabel{tab:recovery}{{3}{4}{Performance Recovery \& Negative Transfer Mitigation (N=50 Labels)}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Verification of Negative Transfer Mitigation}{4}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Architecture Benchmark: The Efficiency Frontier}{4}{subsection.4.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Pareto Efficiency Plot. MobileNetV3 (Green) offers the optimal balance of accuracy and latency for edge robotics.}}{4}{figure.4}\protected@file@percent }
+\newlabel{fig:pareto}{{4}{4}{Pareto Efficiency Plot. MobileNetV3 (Green) offers the optimal balance of accuracy and latency for edge robotics}{figure.4}{}}
+\citation{luo2023mot}
+\citation{salman2025plant}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces The Efficiency Benchmark. Accuracy vs. Compute metrics for adapted models on the Potato task.}}{5}{table.4}\protected@file@percent }
+\newlabel{tab:bench}{{4}{5}{The Efficiency Benchmark. Accuracy vs. Compute metrics for adapted models on the Potato task}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Granular Analysis of Failure Modes}{5}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{5}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Decoupling Model Capacity from Domain Robustness}{5}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The Mechanism of Partial Domain Adaptation}{5}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Operational Viability: The ``Detection Lag'' Argument}{5}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Limitations and Future Work}{5}{subsection.5.4}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{zubair2025robust}{1}
+\bibcite{hughes2015plantvillage}{2}
+\bibcite{singh2020plantdoc}{3}
+\bibcite{wang2019characterizing}{4}
+\bibcite{salman2025plant}{5}
+\bibcite{yuan2020cold}{6}
+\bibcite{sohn2020fixmatch}{7}
+\bibcite{luo2023mot}{8}
+\bibcite{rawat2022active}{9}
+\bibcite{howard2019mobilenetv3}{10}
+\bibcite{tan2019efficientnet}{11}
+\bibcite{mehta2021mobilevit}{12}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{6}{section*.1}\protected@file@percent }
+\gdef \@abspage@last{6}

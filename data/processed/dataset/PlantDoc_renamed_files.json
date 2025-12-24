@@ -1,0 +1,517 @@
+[
+  {
+    "original": "PlantDoc-Dataset-master\\test\\Bell_pepper leaf\\IMG_1629.JPG?1507122477.jpg",
+    "short_name": "img_493742.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\test\\Bell_pepper leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\test\\Corn Gray leaf spot\\show_picture.asp?id=aaaaaaaaaaogcqq&w2=420&h2=378&clip=center,420,378&meta=0.jpg",
+    "short_name": "img_315371.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\test\\Corn Gray leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\test\\Potato leaf late blight\\1421_0.jpeg?itok=FMtmgePj.jpg",
+    "short_name": "img_262423.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\test\\Potato leaf late blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\test\\grape leaf\\grape-leaf-picture-id119212425?k=6&m=119212425&s=612x612&w=0&h=8RZBWGcvXe4tAwhhvYZVFzWyRyiN5iTxKfWBpPT1FcU=.jpg",
+    "short_name": "img_288300.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\test\\grape leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\test\\grape leaf\\latest?cb=20100621160325.jpg",
+    "short_name": "img_663419.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\test\\grape leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf\\01Apple-scab-2-Venturia-inaequalis.ashx?w=600&h=408&bc=ffffff.jpg",
+    "short_name": "img_477594.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf\\6A642AA3-1DB1-4413-B0B6-7FBB68A5904A_original.jpeg?1528657579.jpg",
+    "short_name": "img_498846.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf\\Apple_scab.jpg?t=1473441220256&width=300&height=200&name=Apple_scab.jpg",
+    "short_name": "img_125839.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf\\IMG_3166_1500x1500%253E.JPG?1473520197.jpg",
+    "short_name": "img_393093.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf\\branch-with-ill-leaf-of-apple-scab-disease-picture-id928917010?k=6&m=928917010&s=612x612&w=0&h=UY6EBbnGkTzVcp4Tm8myYO7KoIOtrZo3VRDrd91qslo=.jpg",
+    "short_name": "img_993498.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple Scab Leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple leaf\\apple-tree-branch-blossom-plant-fruit-berry-leaf-flower-food-green-produce-evergreen-flora-sad-shrub-apples-branch-with-apples-flowering-plant-rose-family-acerola-malpighia-woody-plant-land-plant-928225.jpg",
+    "short_name": "img_937465.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple leaf\\apple-tree-branch-plant-fruit-leaf-flower-food-green-produce-flora-immature-apple-tree-flowering-plant-wild-apple-tree-apple-gear-land-plant-606389.jpg",
+    "short_name": "img_639779.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple leaf\\green-leaf-picture-id177130309?b=1&k=6&m=177130309&s=612x612&w=0&h=VP3U0AM5j0fvQqOwuI5f7cmb2Ji88mVep0eoXQaJRfs=.jpg",
+    "short_name": "img_508170.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple leaf\\leaves-isolated-on-white-background-picture-id537925565?k=6&m=537925565&s=612x612&w=0&h=Ogzc4YHTI4i4q9aiTIG6Zq2sAMv6xTKiDlCmYANlzK8=.jpg",
+    "short_name": "img_694568.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple leaf\\ripe-red-apple-with-green-leaf-isolated-on-white-picture-id184640296?s=612x612.jpg",
+    "short_name": "img_071959.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple leaf\\ripe-red-apple-with-leaf-picture-id117485645?b=1&k=6&m=117485645&s=612x612&w=0&h=Ii96HYzF-2E5ky-IcXbVhvEFvU28o0rlkwagb7T6LhY=.jpg",
+    "short_name": "img_385833.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple rust leaf\\apple-leaf-rust-and-cedar-apple-roestella-pirata-report-of-the-of-picture-id629456105?s=612x612.jpg",
+    "short_name": "img_768147.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple rust leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Apple rust leaf\\cedar_apple_rust_3.JPG?1362772840.jpg",
+    "short_name": "img_583778.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Apple rust leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\IMG_6029-001_1500x1500%253E.JPG?1403119544.jpg",
+    "short_name": "img_943800.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\file.php?id=5336&t=1.jpg",
+    "short_name": "img_117917.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\image_1500x1500%253E.jpeg?1467983528.jpg",
+    "short_name": "img_266728.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\image_1500x1500%253E.jpeg?1472603885.jpg",
+    "short_name": "img_338232.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\image_300x300%2523.jpeg?1472603885.jpg",
+    "short_name": "img_037984.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\image_300x300%2523.jpeg?1472603886.jpg",
+    "short_name": "img_565765.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\image_original.jpeg?1472603885.jpg",
+    "short_name": "img_203277.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\image_original.jpeg?1472603886.jpg",
+    "short_name": "img_891579.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot\\pepper-plant-leaves-holes-in-pepper-plant-leaves-holes-in-pepper-plant-leaves-small-holes-in-pepper-plant-leaves-pepper-plant-leaves-eaten.jpg",
+    "short_name": "img_879379.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf\\DSCN5835_original.JPG?1472909566.jpg",
+    "short_name": "img_693679.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf\\IMG_3891.JPG?1492073147.jpg",
+    "short_name": "img_156259.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf\\file.php?id=18598&t=1.jpg",
+    "short_name": "img_693669.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf\\image_1500x1500%253E.jpeg?1472959493.jpg",
+    "short_name": "img_586818.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf\\pepper-plant-leaves-green-bell-pepper-seedlings-growing-in-dark-brown-soil-in-the-sunshine-with-a-white-my-pepper-plant-leaves-are-being-eaten.jpg",
+    "short_name": "img_229888.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Bell_pepper leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Blueberry leaf\\Blueberry_Damage_1_original.JPG?1472642168.jpg",
+    "short_name": "img_648355.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Blueberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Blueberry leaf\\Blueberry_Damage_2_original.JPG?1431126657.jpg",
+    "short_name": "img_559577.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Blueberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Blueberry leaf\\IMG_0002_original.JPG?1500100269.jpg",
+    "short_name": "img_722178.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Blueberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Blueberry leaf\\IMG_0017_original.JPG?1500100270.jpg",
+    "short_name": "img_066884.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Blueberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Blueberry leaf\\image_1500x1500%253E.jpeg?1472756546.jpg",
+    "short_name": "img_436525.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Blueberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Blueberry leaf\\image_1500x1500%253E.jpeg?1472756548.jpg",
+    "short_name": "img_437696.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Blueberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Blueberry leaf\\plant-fruit-berry-leaf-flower-food-herb-produce-blueberry-botany-flora-plants-wildflower-shrub-macro-photography-wipes-flowering-plant-bilberry-huckleberry-dayflower-land-plant-dayflower-family-1090218.jpg",
+    "short_name": "img_099554.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Blueberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Cherry leaf\\IMG_5892_original.JPG?1500348823.jpg",
+    "short_name": "img_169685.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Cherry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Cherry leaf\\tree-branch-blossom-plant-fruit-berry-leaf-flower-ripe-food-red-produce-botany-flora-leaves-shrub-fruits-bing-cherry-cherries-flowering-plant-rose-family-fruity-cherry-harvest-sweet-cherry-land-plant-913933.jpg",
+    "short_name": "img_158167.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Cherry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn Gray leaf spot\\7176752.jpeg?351.jpg",
+    "short_name": "img_092280.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn Gray leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn Gray leaf spot\\GetFile.aspx?guid=fb78e057-33b3-4901-b836-e08e45889f6f.jpg",
+    "short_name": "img_566720.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn Gray leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn Gray leaf spot\\IMG_0004.JPG?itok=tv_vWPMi.jpg",
+    "short_name": "img_067083.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn Gray leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn leaf blight\\2159_0.jpeg?itok=eBFRbolm.jpg",
+    "short_name": "img_671457.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn leaf blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn leaf blight\\Southern-Corn-Leaf-Blight-USDA.ashx?w=770.jpg",
+    "short_name": "img_637607.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn leaf blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn leaf blight\\agriculture-crop-disease-northern-corn-leaf-blight-fungus-exserohilum-turcicum-closeup-of-lesions-on-corn-leaves-texas-usa-x74mbx.jpg",
+    "short_name": "img_129170.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn leaf blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn leaf blight\\image_1500x1500%253E.jpeg?1473988930.jpg",
+    "short_name": "img_371206.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn leaf blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn leaf blight\\image_1500x1500%253E.jpeg?1473988931.jpg",
+    "short_name": "img_998090.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn leaf blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn leaf blight\\show_picture.asp?id=aaaaaaaaaanoroz&w=524.jpg",
+    "short_name": "img_337254.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn leaf blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn rust leaf\\GetStoredImage?symbolicName=originalX19261YsiteXDTNYcatalogXcatalog%20&category=CMS.jpg",
+    "short_name": "img_020992.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn rust leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn rust leaf\\Southern%20corn%20rust.ashx?w=600.jpg",
+    "short_name": "img_224866.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn rust leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn rust leaf\\Southern-Corn-Rust.ashx?w=770.jpg",
+    "short_name": "img_521608.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn rust leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Corn rust leaf\\corn-southern-rust-pustules.JPG?itok=VXIzyv8m.jpg",
+    "short_name": "img_995052.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Corn rust leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Peach leaf\\image_original.jpeg?1473123508.jpg",
+    "short_name": "img_297534.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Peach leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Potato leaf early blight\\1421_0.jpeg?itok=FMtmgePj.jpg",
+    "short_name": "img_262423.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Potato leaf early blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Potato leaf early blight\\Early%20Blight%20-%20Potatoes.ashx?w=350.jpg",
+    "short_name": "img_550553.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Potato leaf early blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Raspberry leaf\\IMG_7182_original.JPG?1493665266.jpg",
+    "short_name": "img_158832.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Raspberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Soyabean leaf\\SOYBEANS_2_1500x1500%253E.JPG?1474027789.jpg",
+    "short_name": "img_746637.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Soyabean leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Soyabean leaf\\close-up-shot-of-soy-leaves-glistening-in-the-sunshine-picture-id157639700?s=612x612.jpg",
+    "short_name": "img_402573.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Soyabean leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Soyabean leaf\\soybean-leaf-picture-id136581201?s=612x612.jpg",
+    "short_name": "img_966237.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Soyabean leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf\\1846.400x400_4.jpeg?itok=845CLslG.jpg",
+    "short_name": "img_839979.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf\\dusty-mildew-on-plants-control-powdery-mildew-identifying-powdery-mildew-plant-spray-powdery-mildew-jade-plant-treatment.jpg",
+    "short_name": "img_205797.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf\\dusty-mildew-on-plants-powdery-mildew-on-a-courgette-leaf-treat-downy-mildew-plants-controlling-powdery-mildew-on-squash-plants.jpg",
+    "short_name": "img_386444.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf\\file.php?id=16321&t=1.jpg",
+    "short_name": "img_447940.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf\\powdery-mildew-on-squash-plants-you-can-prevent-powdery-mildew-disease-by-avoiding-overhead-sprinkling-and-watering-in-the-morning-rather-than-evening-forum-news-service-file-photo-what-causes-powdery.jpg",
+    "short_name": "img_132202.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf\\what-is-powdery-mildew-on-plants-mild-powdery-mildew-that-will-appear-on-most-squash-leaves-during-the-mid-summer-powdery-mildew-plant-spray-powdery-mildew-on-tomato-plant-leaves.jpg",
+    "short_name": "img_753879.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf\\white-mold-on-squash-plants-powdery-mildew-on-plant-leaves-how-to-get-rid-of-white-mold-on-squash-plants-white-mold-on-squash-plants.jpg",
+    "short_name": "img_934195.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Squash Powdery mildew leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Strawberry leaf\\green-strawberry-leaf-isolated-on-white-picture-id623362994?k=6&m=623362994&s=612x612&w=0&h=l350NQvVUUsLkRD1jOeEDnUledIWPjFXi86jd_Uv0OE=.jpg",
+    "short_name": "img_013389.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Strawberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Strawberry leaf\\green-strawberry-leaf-isolated-on-white-picture-id654400974?k=6&m=654400974&s=612x612&w=0&h=x97U-8miyZxfXvAUVMbPGGj6_Lt-p35dVXiu1zuBt-Q=.jpg",
+    "short_name": "img_550940.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Strawberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Strawberry leaf\\green-strawberry-leaf-isolated-on-white-picture-id692328988?k=6&m=692328988&s=612x612&w=0&h=604VCrDe3mbN0c6LZZSBBvm4iMdWh1wcb3KHDX6CVRE=.jpg",
+    "short_name": "img_069607.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Strawberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Strawberry leaf\\strawberry-leaf-isolated-on-white-background-picture-id487562700?k=6&m=487562700&s=612x612&w=0&h=uJYH7WuQOtfgoSp4EKzGuRPXoejL470Pkh_zMoIJYEs=.jpg",
+    "short_name": "img_073380.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Strawberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Strawberry leaf\\strawberry-plant-leaves-the-distorted-wrinkled-leaves-are-showing-signs-of-cold-damage-the-older-and-younger-leaves-around-them-are-normal-looking-strawberry-plant-leaves-turn-red.jpg",
+    "short_name": "img_324803.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Strawberry leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf\\1058_0.jpeg?itok=OQkdtxgv.jpg",
+    "short_name": "img_424978.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf\\Early_blight_1.jpg?1376579808.jpg",
+    "short_name": "img_063121.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf\\early%20blight%20%283%29.jpg?itok=UMYWI0xr.jpg",
+    "short_name": "img_963270.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf\\early%20blight%20%284%29.jpg?itok=gfK5C193.jpg",
+    "short_name": "img_844409.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf\\tomato-blight-soil-treatment-early-tomato-blight-in-a-microcosm-lower-leaves-curl-up-and-die-bulls-eye-lesions-tomato-fungus-soil-treatment.jpg",
+    "short_name": "img_367044.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato Early blight leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato Septoria leaf spot\\IMG_4452_1500x1500%253E.JPG?1407883119.jpg",
+    "short_name": "img_511573.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato Septoria leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato Septoria leaf spot\\TomatoDisease_IMG_2744_2016Jul01_original.JPG?1472858324.jpg",
+    "short_name": "img_170561.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato Septoria leaf spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot\\250?cb=20100819110637.jpg",
+    "short_name": "img_518572.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot\\Tomato2_original.JPG?1472597932.jpg",
+    "short_name": "img_921448.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot\\image3_original.JPG?1472755422.jpg",
+    "short_name": "img_913160.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot\\image5_300x300%2523.JPG?1472755422.jpg",
+    "short_name": "img_595970.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot\\latest?cb=20100808132744.jpg",
+    "short_name": "img_889897.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf bacterial spot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf late blight\\tomato-late-blight-sporulation-on-a-tomato-leaflet-picture-id81781370?s=612x612.jpg",
+    "short_name": "img_039533.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf late blight"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf yellow virus\\latest?cb=20100719124603.jpg",
+    "short_name": "img_162432.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf yellow virus"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf yellow virus\\leaves-on-tomato-plant-turning-yellow-what-does-it-mean-when-your-plant-leaves-turn-yellow-tomato-leaf-problems-a-guide-to-leaves-tomato-plant-turning-yellow.jpg",
+    "short_name": "img_851547.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf yellow virus"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato leaf\\single-a-green-leaf-of-tomato-picture-id496662675?k=6&m=496662675&s=612x612&w=0&h=6zKfv022H_9cLQSIR_kpcOAlTeg1eIVtLBbc80PQA7Y=.jpg",
+    "short_name": "img_271106.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato mold leaf\\ArticleImage.aspx?imgid=4987.jpg",
+    "short_name": "img_864395.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato mold leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato mold leaf\\black%20leaf%20mold%20%283%29.JPG?itok=u5TDHCSM.jpg",
+    "short_name": "img_246881.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato mold leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato mold leaf\\black%20leaf%20mold%20%284%29.JPG?itok=DIIUw9JU.jpg",
+    "short_name": "img_235838.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato mold leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato mold leaf\\latest?cb=20100723105221.jpg",
+    "short_name": "img_389433.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato mold leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato mold leaf\\tomato-leaf-mold-infection-on-a-leaf-top-and-underside-picture-id81781575?s=612x612.jpg",
+    "short_name": "img_857577.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato mold leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\Tomato mold leaf\\tomato_plants_1_original.JPG?1407178095.jpg",
+    "short_name": "img_980146.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\Tomato mold leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf black rot\\IMG_0830_original.JPG?1472588083.jpg",
+    "short_name": "img_674823.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf black rot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf black rot\\black%20spot%20%2819%29.JPG?itok=mf4II8zq.jpg",
+    "short_name": "img_468375.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf black rot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf black rot\\image_original.jpeg?1495058317.jpg",
+    "short_name": "img_825208.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf black rot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf black rot\\image_original.jpeg?1495058318.jpg",
+    "short_name": "img_036938.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf black rot"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf\\grape-leaf-isolated-cut-out-on-white-background-picture-id172320164?s=612x612.jpg",
+    "short_name": "img_251931.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf\\grape-leaves-picture-id108483523?k=6&m=108483523&s=612x612&w=0&h=hBDI-YPeBffgjjZzbHsAaCfARsflsveT1NbcncLft5Y=.jpg",
+    "short_name": "img_400638.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf\\nature-plant-grape-vine-wine-fruit-food-green-produce-agriculture-grapevine-vines-shrub-grapes-winegrowing-rebstock-flowering-plant-vitis-grape-leaves-green-grapes-swiss-francs-land-plant-grapevine-family-556232.jpg",
+    "short_name": "img_530421.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf"
+  },
+  {
+    "original": "PlantDoc-Dataset-master\\train\\grape leaf\\young-fresh-grape-leaf-picture-id183867740?k=6&m=183867740&s=612x612&w=0&h=Q8_s3Yw7p_VKQjda-mZPl9rN4lDmpVjjbMUk95HtVFk=.jpg",
+    "short_name": "img_726047.jpg",
+    "relative_parent": "PlantDoc-Dataset-master\\train\\grape leaf"
+  }
+]

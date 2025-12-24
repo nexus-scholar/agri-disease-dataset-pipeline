@@ -1,0 +1,23 @@
+{
+  "dataset": "PlantVillage",
+  "processed_date": "2025-12-11T18:09:28.588751",
+  "total_images": 20638,
+  "num_classes": 15,
+  "classes": {
+    "pepper_bell_bacterial_spot": 997,
+    "pepper_bell_healthy": 1478,
+    "potato_early_blight": 1000,
+    "potato_healthy": 152,
+    "potato_late_blight": 1000,
+    "tomato_target_spot": 1404,
+    "tomato_mosaic_virus": 373,
+    "tomato_yellow_curl_virus": 3208,
+    "tomato_bacterial_spot": 2127,
+    "tomato_early_blight": 1000,
+    "tomato_healthy": 1591,
+    "tomato_late_blight": 1909,
+    "tomato_mold": 952,
+    "tomato_septoria_spot": 1771,
+    "tomato_spider_mites_two_spotted_spider_mite": 1676
+  }
+}

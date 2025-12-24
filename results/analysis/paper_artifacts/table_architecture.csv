@@ -1,0 +1,8 @@
+crop,model,field_acc
+tomato,mobilenetv3,27.33
+potato,mobilenetv3,60.0
+pepper,mobilenetv3,81.48
+tomato,efficientnet,42.0
+tomato,mobilevit,37.33
+potato,efficientnet,60.0
+potato,mobilevit,57.78

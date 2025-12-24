@@ -1,0 +1,4 @@
+Crop,mobilenetv3_val,mobilenetv3_field,mobilenetv3_gap,efficientnet_val,efficientnet_field,efficientnet_gap,mobilevit_val,mobilevit_field,mobilevit_gap
+Tomato,99.7,22.0,77.7,99.3,19.3,80.0,99.7,30.7,69.1
+Potato,99.4,57.8,41.6,99.8,44.4,55.3,99.9,60.0,39.9
+Pepper,100.0,74.1,25.9,100.0,40.7,59.3,100.0,63.0,37.0
