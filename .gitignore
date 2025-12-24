@@ -1,7 +1,7 @@
 .idea/
 data/raw
 # data/processed
-# models/  <-- Commented out to allow src/models
+models/
 logs/
 __pycache__/
 *.pyc
@@ -9,3 +9,4 @@ __pycache__/
 .DS_Store
 .vscode/
 .ipynb_checkpoints/
+data/processed/dataset
