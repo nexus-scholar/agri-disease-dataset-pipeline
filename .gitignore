@@ -4,6 +4,7 @@ data/raw
 models/
 logs/
 __pycache__/
+pipeline/__pycache__/
 *.pyc
 .env
 .DS_Store

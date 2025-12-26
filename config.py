@@ -17,14 +17,15 @@ class Config:
     
     # Training
     IMAGE_SIZE = 224
-    BATCH_SIZE_SOURCE = 64
-    BATCH_SIZE_TARGET_LABELED = 32
-    BATCH_SIZE_TARGET_UNLABELED = 32
+    # Reduced batch sizes for 4GB GPU
+    BATCH_SIZE_SOURCE = 32
+    BATCH_SIZE_TARGET_LABELED = 16
+    BATCH_SIZE_TARGET_UNLABELED = 8 # 8 * 7 = 56 images
     
     LEARNING_RATE = 0.03
     MOMENTUM = 0.9
     WEIGHT_DECAY = 5e-4
-    EPOCHS = 60
+    EPOCHS = 5
     LR_DECAY_EPOCHS = [30, 50]
     LR_DECAY_GAMMA = 0.1
     
