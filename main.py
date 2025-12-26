@@ -72,7 +72,6 @@ def train_fixmatch(model, source_loader, labeled_target_loader, unlabeled_target
     steps_per_epoch = len(source_loader)
     
     model.train()
-    criterion_sup = nn.CrossEntropyLoss(ignore_index=-1)
     
     for epoch in range(epochs):
         pbar = tqdm(range(steps_per_epoch), desc=f"FixMatch Epoch {epoch+1}/{epochs}")
@@ -114,8 +113,8 @@ def train_fixmatch(model, source_loader, labeled_target_loader, unlabeled_target
             logits_u_s = model(inputs_u_s)
             
             # Losses
-            loss_s = criterion_sup(logits_s, targets_s)
-            loss_t = criterion_sup(logits_t, targets_t)
+            loss_s = nn.CrossEntropyLoss()(logits_s, targets_s)
+            loss_t = nn.CrossEntropyLoss()(logits_t, targets_t)
             loss_u, mask = fixmatch_loss_fn(logits_u_w, logits_u_s)
             
             # Total Loss (Weights from FixMatch paper: lambda_u=1.0)
@@ -209,8 +208,7 @@ def main():
         batch_size=cfg.BATCH_SIZE_SOURCE, 
         shuffle=True, 
         num_workers=4,
-        pin_memory=True,
-        persistent_workers=True
+        pin_memory=True
     )
     
     # Target Domain (PlantDoc) - For Evaluation (Clean, Shared Classes Only)
@@ -235,7 +233,7 @@ def main():
         transform=get_transform(train=False), # No aug for selection
         split="train",
         class_to_idx=source_dataset.class_to_idx,
-        include_unknown=True
+        include_unknown=False 
     )
     
     # Target Domain - Unlabeled Pool for FixMatch (Includes Noise/Unknown)
@@ -310,15 +308,14 @@ def main():
         labeled_target_dataset,
         batch_size=cfg.BATCH_SIZE_TARGET_LABELED,
         shuffle=True,
-        num_workers=0
+        num_workers=2
     )
     
     unlabeled_target_loader = DataLoader(
         target_unlabeled_dataset,
-        batch_size=cfg.BATCH_SIZE_TARGET_UNLABELED * 3, # Reduced Mu from 7 to 3 for M1200 GPU
+        batch_size=cfg.BATCH_SIZE_TARGET_UNLABELED * cfg.FIXMATCH_MU, # Mu=7
         shuffle=True,
-        num_workers=4,
-        persistent_workers=True
+        num_workers=4
     )
     
     # --- Phase 2: FixMatch Training ---
